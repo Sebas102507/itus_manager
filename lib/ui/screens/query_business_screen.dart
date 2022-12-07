@@ -15,14 +15,14 @@ import '../generic_widgets/loading_widget.dart';
 
 
 
-class QueryScreen extends StatefulWidget {
-  const QueryScreen({Key? key}) : super(key: key);
+class QueryBusinessScreen extends StatefulWidget {
+  const QueryBusinessScreen({Key? key}) : super(key: key);
 
   @override
-  State<QueryScreen> createState() => _QueryScreenState();
+  State<QueryBusinessScreen> createState() => _QueryBusinessScreenState();
 }
 
-class _QueryScreenState extends State<QueryScreen> {
+class _QueryBusinessScreenState extends State<QueryBusinessScreen> {
 
   bool isDocument = true;
 
@@ -46,7 +46,7 @@ class _QueryScreenState extends State<QueryScreen> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
-            Strings.userTitle,
+            Strings.companyTitle,
             style: Theme
                 .of(context)
                 .textTheme
@@ -234,53 +234,53 @@ class _QueryScreenState extends State<QueryScreen> {
                 Expanded(
                     flex: 3,
                     child: Padding(
-                      padding: const EdgeInsets.only(
-                          bottom: 10
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(5)),
-                          border: Border.all(color: lightGrey.withOpacity(0.3),width: 1.5),
-                          color: Colors.white,
+                        padding: const EdgeInsets.only(
+                            bottom: 10
                         ),
-                        child:  FutureBuilder(
-                          future: documentInfoService.getAllDocuments(),
-                          builder: (BuildContext context, AsyncSnapshot snapshot){
-                            if(!snapshot.hasData){
-                              return LoadingWidget();
-                            } else if(snapshot.hasError){
-                              return const Center(
-                                child: Text("Hubo un error."),
-                              );
-                            }else{
-                              return  DropdownButton<String>(
-                                isExpanded: true,
-                                value: dropdownvalue,
-                                items: (snapshot.data as HashMap<String, int>).keys.map((String items) {
-                                  return DropdownMenuItem(
-                                    value: items,
-                                    child:  Text(
-                                      items,
-                                      style: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(color: Colors.black),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    dropdownvalue = newValue!;
-                                    documentTypeSelected=(snapshot.data as HashMap<String, int>)[newValue]!;
-                                  });
-                                },
-                              );
-                            }
-                          }
+                        child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(Radius.circular(5)),
+                              border: Border.all(color: lightGrey.withOpacity(0.3),width: 1.5),
+                              color: Colors.white,
+                            ),
+                            child:  FutureBuilder(
+                                future: documentInfoService.getAllDocuments(),
+                                builder: (BuildContext context, AsyncSnapshot snapshot){
+                                  if(!snapshot.hasData){
+                                    return LoadingWidget();
+                                  } else if(snapshot.hasError){
+                                    return const Center(
+                                      child: Text("Hubo un error."),
+                                    );
+                                  }else{
+                                    return  DropdownButton<String>(
+                                      isExpanded: true,
+                                      value: dropdownvalue,
+                                      items: (snapshot.data as HashMap<String, int>).keys.map((String items) {
+                                        return DropdownMenuItem(
+                                          value: items,
+                                          child:  Text(
+                                            items,
+                                            style: Theme
+                                                .of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(color: Colors.black),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          dropdownvalue = newValue!;
+                                          documentTypeSelected=(snapshot.data as HashMap<String, int>)[newValue]!;
+                                        });
+                                      },
+                                    );
+                                  }
+                                }
+                            )
                         )
-                      )
                     )
                 )
 
@@ -293,25 +293,25 @@ class _QueryScreenState extends State<QueryScreen> {
             child: Column(
               children: [
                 Expanded(
-                  flex: 1,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child:  Text(
-                      Strings.documentNumberTitle,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: Colors.black),
-                      textAlign: TextAlign.center,
-                    ),
-                  )
+                    flex: 1,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child:  Text(
+                        Strings.documentNumberTitle,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: Colors.black),
+                        textAlign: TextAlign.center,
+                      ),
+                    )
                 ),
                 Expanded(
                     flex: 3,
                     child: Padding(
                       padding: const EdgeInsets.only(
-                        bottom: 10
+                          bottom: 10
                       ),
                       child: GenericNumberInputWidget(controller: documentNumberController,backgroudColor: Colors.white,shadowColor: Colors.grey,title:Strings.documentNumberTitle),
                     )
@@ -324,23 +324,23 @@ class _QueryScreenState extends State<QueryScreen> {
           Expanded(
             flex: 1,
             child: Container(
-              padding: const EdgeInsets.only(
-                bottom: 10,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Align(
-                        child: searchButton()
+                padding: const EdgeInsets.only(
+                  bottom: 10,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Align(
+                          child: searchButton()
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(),
-                  )
-                ],
-              )
+                    Expanded(
+                      flex: 3,
+                      child: Container(),
+                    )
+                  ],
+                )
             ),
           )
         ],
@@ -423,7 +423,7 @@ class _QueryScreenState extends State<QueryScreen> {
         setState(() {loading=true;});
         try{
           if(isDocument){
-             await Provider.of<QueryProvider>(context, listen: false).queryByDocument("$documentTypeSelected",documentNumberController.text);
+            await Provider.of<QueryProvider>(context, listen: false).queryByDocument("$documentTypeSelected",documentNumberController.text);
           }else{
             await Provider.of<QueryProvider>(context, listen: false).queryByName(userNameController.text);
           }
@@ -462,8 +462,8 @@ class _QueryScreenState extends State<QueryScreen> {
       onTap: ()async{
         setState(() {loading=true;});
         await Provider.of<QueryProvider>(context, listen: false).updateCurrentQueryUser(queryUser.tipo_identificacion,queryUser.document);
+        Navigator.pushNamed(context, Routes.itusBusinessHomeScreen);
         setState(() {loading=false;});
-        Navigator.pushNamed(context, Routes.itusUserHomeScreen);
       },
       child:  Container(
           color: lightGrey.withOpacity(0.1),
@@ -487,23 +487,23 @@ class _QueryScreenState extends State<QueryScreen> {
                 child: Column(
                   children: [
                     Expanded(
-                      flex: 1,
-                      child: Container(
-                        width: double.infinity,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "${queryUser.name} ${queryUser.lastname}",
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: Colors.black, fontSize: 17,fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.start,
+                        flex: 1,
+                        child: Container(
+                          width: double.infinity,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "${queryUser.name} ${queryUser.lastname}",
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: Colors.black, fontSize: 17,fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.start,
+                            ),
                           ),
-                        ),
-                      )
+                        )
                     ),
                     Expanded(
                       flex: 1,
@@ -542,5 +542,3 @@ class _QueryScreenState extends State<QueryScreen> {
 
 
 }
-
-

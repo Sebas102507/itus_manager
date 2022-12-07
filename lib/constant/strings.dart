@@ -66,6 +66,9 @@ static String datperTitle=  "Autorización";
 
 static String remainDataTitle=  "Datos pendientes por actualizar";
 static String userInfoTitle=  "Información de usuario";
+static String historyTitle=  "Histórico de usuario";
+static String businessInfoTitle=  "Información de empresa";
+static String businessHistoryTitle=  "Histórico de empresa";
 
 static String subsidioTitle=  "Subsidios";
 static String grupoFamiliarTitle=  "Grupo Familiar";
@@ -74,4 +77,9 @@ static String cicloNegocioTitle=  "Ciclo de negocio";
 static String segmentoTitle=  "Segmento";
 
 
+//****************************NAVIGATION-BAR***********************************
+  static String informationNavBar=  "Información";
+  static String historyNavBar=  "Histórico";
+  static String questionsNavBar=  "Preguntas Fre.";
+  static String oportunitiesNavBar=  "Oportunidades";
 }

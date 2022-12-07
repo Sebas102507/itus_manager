@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:itus_manager/ui/screens/home_screen.dart';
+import 'package:itus_manager/ui/screens/itus_user_home_screen.dart';
 import 'package:itus_manager/ui/screens/login_screen.dart';
 import 'package:itus_manager/ui/screens/profile_screen.dart';
 import 'package:itus_manager/ui/screens/recover_password_screen.dart';
 
 import '../ui/screens/current_user_info_screen.dart';
+import '../ui/screens/query_business_screen.dart';
 import '../ui/screens/query_screen.dart';
+import '../ui/screens/tus_business_home_screen.dart';
 
 
 class Routes{
@@ -15,6 +18,13 @@ class Routes{
   static String recoverPasswordScreen= "recoverPasswordScreen";
   static String homeScreen= "homeScreen";
   static String queryScreen= "queryScreen";
+  static String queryBusinessScreen= "queryBusinessScreen";
+
+  static String itusUserHomeScreen= "itusUserHomeScreen";
+
+  static String itusBusinessHomeScreen= "itusBusinessHomeScreen";
+
+
   static String currentUserInfoScreen= "currentUserInfoScreen";
 
   Map<String, WidgetBuilder> routes(){
@@ -24,7 +34,12 @@ class Routes{
       recoverPasswordScreen: (context) =>   const RecoverPasswordScreen(),
       homeScreen: (context) =>   const HomeScreen(),
       queryScreen: (context) =>   const QueryScreen(),
+      queryBusinessScreen: (context) =>   const QueryBusinessScreen(),
+      itusUserHomeScreen: (context) =>   const ItusUserHomeScreen(),
+      itusBusinessHomeScreen: (context) =>   const ItusBusinessHomeScreen(),
+
       currentUserInfoScreen: (context) =>   const CurrentUserInfoScreen(),
+
     };
   }
 

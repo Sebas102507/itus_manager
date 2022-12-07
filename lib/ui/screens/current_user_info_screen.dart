@@ -142,58 +142,54 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
 
                            Expanded(
                              flex: 1,
-                             child: Container(
-                                 child: Row(
-                                   children: [
-                                     Expanded(
-                                       flex: 4,
-                                       child: Container(
-                                         child: Align(
-                                           alignment: Alignment.centerLeft,
-                                           child:  Text(
-                                             "${Strings.datperTitle}:",
-                                             style: Theme
-                                                 .of(context)
-                                                 .textTheme
-                                                 .headlineMedium
-                                                 ?.copyWith(color: Colors.black,fontSize: 14),
-                                             textAlign: TextAlign.start,
-                                             overflow: TextOverflow.ellipsis,
-                                           ),
+                             child: Row(
+                               children: [
+                                 Expanded(
+                                   flex: 4,
+                                   child: Align(
+                                     alignment: Alignment.centerLeft,
+                                     child:  Text(
+                                       "${Strings.datperTitle}:",
+                                       style: Theme
+                                           .of(context)
+                                           .textTheme
+                                           .headlineMedium
+                                           ?.copyWith(color: Colors.black,fontSize: 14),
+                                       textAlign: TextAlign.start,
+                                       overflow: TextOverflow.ellipsis,
+                                     ),
+                                   ),
+                                 ),
+                                 Expanded(
+                                   flex: 2,
+                                   child: Container(
+                                     margin: const EdgeInsets.only(
+                                         left: 10,
+                                         right: 10
+                                     ),
+                                     decoration: BoxDecoration(
+                                         color: (query.currentQueryUser.dapter=="SI")?mainOrange:Colors.white,
+                                         border: Border.all(
+                                           color: (query.currentQueryUser.dapter=="SI")?mainOrange:lightGrey.withOpacity(0.7),
                                          ),
+                                         borderRadius: const BorderRadius.all(Radius.circular(10))
+                                     ),
+                                     child: Align(
+                                       alignment: Alignment.center,
+                                       child: Text(
+                                         "Dacter",
+                                         style: Theme
+                                             .of(context)
+                                             .textTheme
+                                             .headlineMedium
+                                             ?.copyWith(color: (query.currentQueryUser.dapter=="SI")?Colors.white:lightGrey.withOpacity(0.7),fontSize: 14),
+                                         textAlign: TextAlign.center,
+                                         overflow: TextOverflow.ellipsis,
                                        ),
                                      ),
-                                     Expanded(
-                                       flex: 2,
-                                       child: Container(
-                                         margin: EdgeInsets.only(
-                                             left: 10,
-                                             right: 10
-                                         ),
-                                         decoration: BoxDecoration(
-                                             color: (query.currentQueryUser.dapter=="SI")?mainOrange:Colors.white,
-                                             border: Border.all(
-                                               color: (query.currentQueryUser.dapter=="SI")?mainOrange:lightGrey.withOpacity(0.7),
-                                             ),
-                                             borderRadius: const BorderRadius.all(Radius.circular(10))
-                                         ),
-                                         child: Align(
-                                           alignment: Alignment.center,
-                                           child: Text(
-                                             "Dacter",
-                                             style: Theme
-                                                 .of(context)
-                                                 .textTheme
-                                                 .headlineMedium
-                                                 ?.copyWith(color: (query.currentQueryUser.dapter=="SI")?Colors.white:lightGrey.withOpacity(0.7),fontSize: 14),
-                                             textAlign: TextAlign.center,
-                                             overflow: TextOverflow.ellipsis,
-                                           ),
-                                         ),
-                                       ),
-                                     ),
-                                   ],
-                                 )
+                                   ),
+                                 ),
+                               ],
                              ),
                            ),
 
@@ -225,7 +221,7 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
                                    Expanded(
                                      flex: 2,
                                      child: Container(
-                                       margin: EdgeInsets.only(
+                                       margin: const EdgeInsets.only(
                                          left: 10,
                                          right: 10
                                        ),
@@ -977,7 +973,5 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
     );
 
   }
-
-
 
 }

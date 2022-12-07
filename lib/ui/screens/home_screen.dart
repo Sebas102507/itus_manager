@@ -202,7 +202,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: ElevatedButton(
                                           style: Theme.of(context).elevatedButtonTheme.style?.copyWith(backgroundColor: MaterialStateProperty.all<Color>(Colors.white)),
                                           onPressed: (){
-
+                                            Provider.of<QueryProvider>(context, listen: false).clearQuery();
+                                            Navigator.pushNamed(context, Routes.queryBusinessScreen);
                                             },
                                           child: Center(
                                             child:  Row(

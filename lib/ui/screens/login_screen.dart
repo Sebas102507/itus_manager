@@ -105,8 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   try{
                                     setState(() {loading=true;});
                                     //await Provider.of<AuthProvider>(context, listen: false).authLogin(controllerEmail.text,controllerPassword.text);
-                                    //ItusUserResponse response = await authService.authLogin("as@as.com","1234567");
-                                    ItusUserResponse response = await await authService.authLogin(controllerEmail.text,controllerPassword.text);
+                                    ItusUserResponse response = await authService.authLogin("as@as.com","1234567");
+                                    //ItusUserResponse response = await await authService.authLogin(controllerEmail.text,controllerPassword.text);
                                     Provider.of<ItusResponseProvider>(context, listen: false).update(response);
                                     setState(() {loading=false; controllerEmail.clear(); controllerPassword.clear();});
                                     Navigator.pushNamed(context, Routes.homeScreen);
