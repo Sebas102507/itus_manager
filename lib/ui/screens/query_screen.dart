@@ -1,22 +1,24 @@
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:itus_manager/constant/routes.dart';
 import 'package:itus_manager/model/QueryUser.dart';
-import 'package:itus_manager/services/document_info_service.dart';
+import 'package:itus_manager/services/query_service.dart';
 import 'package:itus_manager/ui/generic_widgets/generic_input_widget.dart';
 import 'package:itus_manager/ui/generic_widgets/generic_numeric_input_widget.dart';
+import 'package:itus_manager/ui/generic_widgets/queryChooserButton.dart';
+import 'package:itus_manager/ui/generic_widgets/searchButton.dart';
 import 'package:provider/provider.dart';
-
 import '../../constant/strings.dart';
+import '../../model/ItusDocument.dart';
 import '../../provider/query_provider.dart';
 import '../../themes/colors.dart';
 import '../generic_widgets/loading_widget.dart';
 
-
-
 class QueryScreen extends StatefulWidget {
-  const QueryScreen({Key? key}) : super(key: key);
+
+  bool isPerson;
+
+  QueryScreen(this.isPerson, {super.key});
 
   @override
   State<QueryScreen> createState() => _QueryScreenState();
@@ -24,20 +26,15 @@ class QueryScreen extends StatefulWidget {
 
 class _QueryScreenState extends State<QueryScreen> {
 
-  bool isDocument = true;
-
-  var hello={1,2,3};
-  var hello2=[1,2,3];
-
+  bool isDocumentSelected = true;
   final documentNumberController = TextEditingController();
   final userNameController = TextEditingController();
-  final DocumentInfoService documentInfoService= DocumentInfoService();
+  final QueryService queryService= QueryService();
   late HashMap<String, int> documents;
   bool loading=false;
-  String dropdownvalue = 'CC';
   List<QueryUser> queryUsers=[];
   int documentTypeSelected =1;
-
+  ItusDocument _selectedValue = ItusDocument.init(1, "Cédula de ciudadanía", "CC");
 
 
   @override
@@ -46,7 +43,7 @@ class _QueryScreenState extends State<QueryScreen> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
-            Strings.userTitle,
+            widget.isPerson?Strings.userTitle:Strings.companyTitle,
             style: Theme
                 .of(context)
                 .textTheme
@@ -86,16 +83,22 @@ class _QueryScreenState extends State<QueryScreen> {
                             ),
                             Expanded(
                               flex: 1,
-                              child: Container(
-                                child: documentButton(),
-                              ),
+                              child: QueryChooserButton(isDocument: true,isSelected:isDocumentSelected ,onPressed: (){
+                                setState(() {
+                                  isDocumentSelected = true;
+                                  userNameController.clear();
+                                });
+                              },),
                             ),
                             const VerticalDivider(),
                             Expanded(
                               flex: 1,
-                              child: Container(
-                                child: nameButton(),
-                              ),
+                              child: QueryChooserButton(isDocument: false,isSelected:!isDocumentSelected ,onPressed: (){
+                                setState(() {
+                                  isDocumentSelected = false;
+                                  documentNumberController.clear();
+                                });
+                              },),
                             )
                           ],
                         ),
@@ -146,69 +149,9 @@ class _QueryScreenState extends State<QueryScreen> {
   }
 
 
-  Widget documentButton() {
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          isDocument = true;
-          userNameController.clear();
-        });
-      },
-      style: ElevatedButton.styleFrom(
-          backgroundColor: (isDocument) ? mainOrange : Colors.white,
-          side: BorderSide(
-              color: (isDocument) ? mainOrange : lightGrey
-          )
-      ),
-      child: Align(
-        alignment: Alignment.center,
-        child: Text(
-          Strings.queryForDocument,
-          style: Theme
-              .of(context)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: (isDocument) ? Colors.white : lightGrey, fontSize: 13),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-
-
-  Widget nameButton() {
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          isDocument = false;
-          documentNumberController.clear();
-        });
-      },
-      style: ElevatedButton.styleFrom(
-          backgroundColor: (!isDocument) ? mainOrange : Colors.white,
-          side: BorderSide(
-              color: (!isDocument) ? mainOrange : lightGrey
-          )
-      ),
-      child: Align(
-        alignment: Alignment.center,
-        child: Text(
-          Strings.queryForName,
-          style: Theme
-              .of(context)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: (!isDocument) ? Colors.white : lightGrey,fontSize: 13),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-
-
 
   Widget searchWidget() {
-    if(isDocument){
+    if(isDocumentSelected){
       return Column(
         children: [
           Expanded(
@@ -234,53 +177,54 @@ class _QueryScreenState extends State<QueryScreen> {
                 Expanded(
                     flex: 3,
                     child: Padding(
-                      padding: const EdgeInsets.only(
-                          bottom: 10
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(5)),
-                          border: Border.all(color: lightGrey.withOpacity(0.3),width: 1.5),
-                          color: Colors.white,
+                        padding: const EdgeInsets.only(
+                            bottom: 10
                         ),
-                        child:  FutureBuilder(
-                          future: documentInfoService.getAllDocuments(),
-                          builder: (BuildContext context, AsyncSnapshot snapshot){
-                            if(!snapshot.hasData){
-                              return LoadingWidget();
-                            } else if(snapshot.hasError){
-                              return const Center(
-                                child: Text("Hubo un error."),
-                              );
-                            }else{
-                              return  DropdownButton<String>(
-                                isExpanded: true,
-                                value: dropdownvalue,
-                                items: (snapshot.data as HashMap<String, int>).keys.map((String items) {
-                                  return DropdownMenuItem(
-                                    value: items,
-                                    child:  Text(
-                                      items,
-                                      style: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(color: Colors.black),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    dropdownvalue = newValue!;
-                                    documentTypeSelected=(snapshot.data as HashMap<String, int>)[newValue]!;
-                                  });
-                                },
-                              );
-                            }
-                          }
+                        child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(Radius.circular(5)),
+                              border: Border.all(color: lightGrey.withOpacity(0.3),width: 1.5),
+                              color: Colors.white,
+                            ),
+                            child:  FutureBuilder(
+                                future: queryService.queryAllDocuments(),
+                                builder: (BuildContext context, AsyncSnapshot snapshot){
+                                  if(!snapshot.hasData){
+                                    return LoadingWidget();
+                                  } else if(snapshot.hasError){
+                                    return const Center(
+                                      child: Text("Hubo un error."),
+                                    );
+                                  }else{
+
+                                    return DropdownButton<ItusDocument>(
+                                      isExpanded: true,
+                                      value: _selectedValue,
+                                      onChanged: (ItusDocument? newValue) {
+                                        setState(() {
+                                          _selectedValue = newValue!;
+                                          documentTypeSelected= _selectedValue.id_document;
+                                        });
+                                      },
+                                      items: snapshot.data.map<DropdownMenuItem<ItusDocument>>((ItusDocument value) {
+                                        return DropdownMenuItem<ItusDocument>(
+                                          value: value,
+                                          child:  Text(
+                                            value.description,
+                                            style: Theme
+                                                .of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(color: Colors.black),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        );
+                                      }).toList(),
+                                    );
+                                  }
+                                }
+                            )
                         )
-                      )
                     )
                 )
 
@@ -288,67 +232,6 @@ class _QueryScreenState extends State<QueryScreen> {
             ),
           ),
 
-          Expanded(
-            flex: 2,
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child:  Text(
-                      Strings.documentNumberTitle,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: Colors.black),
-                      textAlign: TextAlign.center,
-                    ),
-                  )
-                ),
-                Expanded(
-                    flex: 3,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 10
-                      ),
-                      child: GenericNumberInputWidget(controller: documentNumberController,backgroudColor: Colors.white,shadowColor: Colors.grey,title:Strings.documentNumberTitle),
-                    )
-                )
-
-              ],
-            ),
-          ),
-
-          Expanded(
-            flex: 1,
-            child: Container(
-              padding: const EdgeInsets.only(
-                bottom: 10,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Align(
-                        child: searchButton()
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(),
-                  )
-                ],
-              )
-            ),
-          )
-        ],
-      );
-    }else{
-
-      return Column(
-        children: [
           Expanded(
             flex: 2,
             child: Column(
@@ -358,7 +241,7 @@ class _QueryScreenState extends State<QueryScreen> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child:  Text(
-                        Strings.userNameTitle,
+                        Strings.documentNumberTitle,
                         style: Theme
                             .of(context)
                             .textTheme
@@ -374,7 +257,7 @@ class _QueryScreenState extends State<QueryScreen> {
                       padding: const EdgeInsets.only(
                           bottom: 10
                       ),
-                      child: GenericInput(controller: userNameController,backgroudColor: Colors.white,shadowColor: Colors.grey,title:Strings.userNameTitle),
+                      child: GenericNumberInputWidget(controller: documentNumberController,backgroudColor: Colors.white,shadowColor: Colors.grey,title:Strings.documentNumberTitle),
                     )
                 )
 
@@ -393,11 +276,76 @@ class _QueryScreenState extends State<QueryScreen> {
                     Expanded(
                       flex: 2,
                       child: Align(
-                          child: searchButton()
+                          child: searchButtonCall()
                       ),
                     ),
                     Expanded(
-                      flex: 3,
+                      flex: 4,
+                      child: Container(),
+                    )
+                  ],
+                )
+            ),
+          )
+        ],
+      );
+    }else{
+
+      return Column(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Column(
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child:  Text(
+                        widget.isPerson?Strings.userNameTitle:Strings.businessNameTitle,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: Colors.black),
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                ),
+                Expanded(
+                    flex: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          bottom: 10
+                      ),
+                      child: GenericInput(
+                          controller: userNameController,
+                          backgroudColor: Colors.white,
+                          shadowColor: Colors.grey,
+                          title:widget.isPerson?Strings.userNameTitle:Strings.businessNameTitle),
+                    )
+                )
+
+              ],
+            ),
+          ),
+
+          Expanded(
+            flex: 1,
+            child: Container(
+                padding: const EdgeInsets.only(
+                  bottom: 10,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Align(
+                          child: searchButtonCall()
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
                       child: Container(),
                     )
                   ],
@@ -416,16 +364,15 @@ class _QueryScreenState extends State<QueryScreen> {
   }
 
 
-
-  Widget searchButton(){
-    return ElevatedButton(
+  Widget searchButtonCall(){
+    return SearchButton(
       onPressed: ()async{
         setState(() {loading=true;});
         try{
-          if(isDocument){
-             await Provider.of<QueryProvider>(context, listen: false).queryByDocument("$documentTypeSelected",documentNumberController.text);
+          if(isDocumentSelected){
+            await Provider.of<QueryProvider>(context, listen: false).updateQueryByDocument("$documentTypeSelected",documentNumberController.text);
           }else{
-            await Provider.of<QueryProvider>(context, listen: false).queryByName(userNameController.text);
+            await Provider.of<QueryProvider>(context, listen: false).updateQueryByName(userNameController.text);
           }
           FocusManager.instance.primaryFocus?.unfocus();
           setState(() {loading=false;});
@@ -436,23 +383,6 @@ class _QueryScreenState extends State<QueryScreen> {
           setState(() {loading=false;});
         }
       },
-      child:  Align(
-          alignment: Alignment.center,
-          child: Row(
-            children: [
-              Text(
-                Strings.searchTitle,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-              const Icon(Icons.search,color: Colors.white,size: 30)
-            ],
-          )
-      ),
     );
   }
 
@@ -461,9 +391,13 @@ class _QueryScreenState extends State<QueryScreen> {
     return InkWell(
       onTap: ()async{
         setState(() {loading=true;});
-        await Provider.of<QueryProvider>(context, listen: false).updateCurrentQueryUser(queryUser.tipo_identificacion,queryUser.document);
+        await Provider.of<QueryProvider>(context, listen: false).updateCurrentUserQuery(queryUser.tipo_identificacion,queryUser.document);
         setState(() {loading=false;});
-        Navigator.pushNamed(context, Routes.itusUserHomeScreen);
+        if(widget.isPerson){
+          Navigator.pushNamed(context, Routes.itusUserHomeScreen);
+        }else{
+          Navigator.pushNamed(context, Routes.itusBusinessHomeScreen);
+        }
       },
       child:  Container(
           color: lightGrey.withOpacity(0.1),
@@ -487,39 +421,37 @@ class _QueryScreenState extends State<QueryScreen> {
                 child: Column(
                   children: [
                     Expanded(
-                      flex: 1,
-                      child: Container(
-                        width: double.infinity,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "${queryUser.name} ${queryUser.lastname}",
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: Colors.black, fontSize: 17,fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.start,
+                        flex: 1,
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "${queryUser.name} ${queryUser.lastname}",
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: Colors.black, fontSize: 17,fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.start,
+                            ),
                           ),
-                        ),
-                      )
+                        )
                     ),
                     Expanded(
                       flex: 1,
-                      child: Container(
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "${queryUser.txt_tipodoc} ${queryUser.document}",
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: mainGreen, fontSize: 17,fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.start,
-                          ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "${queryUser.txt_tipodoc} ${queryUser.document}",
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme
+                              .of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: mainGreen, fontSize: 17,fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.start,
                         ),
                       ),
                     )
@@ -542,5 +474,3 @@ class _QueryScreenState extends State<QueryScreen> {
 
 
 }
-
-

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:itus_manager/themes/colors.dart';
-import 'package:itus_manager/ui/screens/current_business_history_screen.dart';
 import 'package:itus_manager/ui/screens/current_business_info_screen.dart';
-import 'package:itus_manager/ui/screens/current_user_info_screen.dart';
-
 import '../../constant/strings.dart';
-import 'current_user_history_screen.dart';
+import 'history_screen.dart';
 
 
 class ItusBusinessHomeScreen extends StatefulWidget {
@@ -17,16 +14,6 @@ class ItusBusinessHomeScreen extends StatefulWidget {
 
 class _ItusBusinessHomeScreenState extends State<ItusBusinessHomeScreen> with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +61,7 @@ class _ItusBusinessHomeScreenState extends State<ItusBusinessHomeScreen> with Si
     if(_selectedIndex==0){
       return const CurrentBusinessInfoScreen();
     }else if(_selectedIndex==1){
-      return const CurrentBusinessHistoryScreen();
+      return HistoryScreen(userType: "Empresa");
     }else{
       return Container(color: Colors.cyanAccent,);
     }

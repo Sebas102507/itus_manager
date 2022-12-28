@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../constant/strings.dart';
 import '../../provider/query_provider.dart';
+import '../../services/query_service.dart';
 
 class CurrentUserInfoScreen extends StatefulWidget {
   const CurrentUserInfoScreen({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class CurrentUserInfoScreen extends StatefulWidget {
 class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
 
   String dropdownvalue = 'Alojamiento';
-
+  final QueryService _queryService= QueryService();
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +178,7 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
                                      child: Align(
                                        alignment: Alignment.center,
                                        child: Text(
-                                         "Dacter",
+                                         Strings.datperValueTitle,
                                          style: Theme
                                              .of(context)
                                              .textTheme
@@ -197,87 +198,83 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
                            const Divider(),
                            Expanded(
                              flex: 1,
-                             child: Container(
-                               child: Row(
-                                 children: [
-                                   Expanded(
-                                     flex: 4,
-                                     child: Container(
-                                       child: Align(
-                                         alignment: Alignment.centerLeft,
-                                         child:  Text(
-                                           "${Strings.contactFormTitle}:",
-                                           style: Theme
-                                               .of(context)
-                                               .textTheme
-                                               .headlineMedium
-                                               ?.copyWith(color: Colors.black,fontSize: 14),
-                                           textAlign: TextAlign.start,
-                                           overflow: TextOverflow.ellipsis,
-                                         ),
+                             child: Row(
+                               children: [
+                                 Expanded(
+                                   flex: 4,
+                                   child: Align(
+                                     alignment: Alignment.centerLeft,
+                                     child:  Text(
+                                       "${Strings.contactFormTitle}:",
+                                       style: Theme
+                                           .of(context)
+                                           .textTheme
+                                           .headlineMedium
+                                           ?.copyWith(color: Colors.black,fontSize: 14),
+                                       textAlign: TextAlign.start,
+                                       overflow: TextOverflow.ellipsis,
+                                     ),
+                                   ),
+                                 ),
+                                 Expanded(
+                                   flex: 2,
+                                   child: Container(
+                                     margin: const EdgeInsets.only(
+                                       left: 10,
+                                       right: 10
+                                     ),
+                                     decoration: BoxDecoration(
+                                       color: (query.currentQueryUser.allow_sms==1)?mainOrange:Colors.white,
+                                       border: Border.all(
+                                         color: (query.currentQueryUser.allow_sms==1)?mainOrange:lightGrey.withOpacity(0.7),
+                                       ),
+                                       borderRadius: const BorderRadius.all(Radius.circular(10))
+                                     ),
+                                     child: Align(
+                                       alignment: Alignment.center,
+                                       child: Text(
+                                         "Celular",
+                                         style: Theme
+                                             .of(context)
+                                             .textTheme
+                                             .headlineMedium
+                                             ?.copyWith(color: (query.currentQueryUser.allow_sms==1)?Colors.white:lightGrey.withOpacity(0.7),fontSize: 14),
+                                         textAlign: TextAlign.center,
+                                         overflow: TextOverflow.ellipsis,
                                        ),
                                      ),
                                    ),
-                                   Expanded(
-                                     flex: 2,
-                                     child: Container(
-                                       margin: const EdgeInsets.only(
+                                 ),
+                                 Expanded(
+                                   flex: 2,
+                                   child: Container(
+                                     margin: const EdgeInsets.only(
                                          left: 10,
                                          right: 10
-                                       ),
-                                       decoration: BoxDecoration(
-                                         color: (query.currentQueryUser.allow_sms==1)?mainOrange:Colors.white,
+                                     ),
+                                     decoration: BoxDecoration(
+                                         color: (query.currentQueryUser.allow_email==1)?mainOrange:Colors.white,
                                          border: Border.all(
-                                           color: (query.currentQueryUser.allow_sms==1)?mainOrange:lightGrey.withOpacity(0.7),
+                                           color: (query.currentQueryUser.allow_email==1)?mainOrange:lightGrey.withOpacity(0.7),
                                          ),
                                          borderRadius: const BorderRadius.all(Radius.circular(10))
-                                       ),
-                                       child: Align(
-                                         alignment: Alignment.center,
-                                         child: Text(
-                                           "Celular",
-                                           style: Theme
-                                               .of(context)
-                                               .textTheme
-                                               .headlineMedium
-                                               ?.copyWith(color: (query.currentQueryUser.allow_sms==1)?Colors.white:lightGrey.withOpacity(0.7),fontSize: 14),
-                                           textAlign: TextAlign.center,
-                                           overflow: TextOverflow.ellipsis,
-                                         ),
+                                     ),
+                                     child: Align(
+                                       alignment: Alignment.center,
+                                       child: Text(
+                                         "Correo",
+                                         style: Theme
+                                             .of(context)
+                                             .textTheme
+                                             .headlineMedium
+                                             ?.copyWith(color: (query.currentQueryUser.allow_email==1)?Colors.white:lightGrey.withOpacity(0.7),fontSize: 14),
+                                         textAlign: TextAlign.center,
+                                         overflow: TextOverflow.ellipsis,
                                        ),
                                      ),
                                    ),
-                                   Expanded(
-                                     flex: 2,
-                                     child: Container(
-                                       margin: EdgeInsets.only(
-                                           left: 10,
-                                           right: 10
-                                       ),
-                                       decoration: BoxDecoration(
-                                           color: (query.currentQueryUser.allow_email==1)?mainOrange:Colors.white,
-                                           border: Border.all(
-                                             color: (query.currentQueryUser.allow_email==1)?mainOrange:lightGrey.withOpacity(0.7),
-                                           ),
-                                           borderRadius: const BorderRadius.all(Radius.circular(10))
-                                       ),
-                                       child: Align(
-                                         alignment: Alignment.center,
-                                         child: Text(
-                                           "Correo",
-                                           style: Theme
-                                               .of(context)
-                                               .textTheme
-                                               .headlineMedium
-                                               ?.copyWith(color: (query.currentQueryUser.allow_email==1)?Colors.white:lightGrey.withOpacity(0.7),fontSize: 14),
-                                           textAlign: TextAlign.center,
-                                           overflow: TextOverflow.ellipsis,
-                                         ),
-                                       ),
-                                     ),
-                                   ),
-                                 ],
-                               )
+                                 ),
+                               ],
                              ),
                            ),
                          ],
@@ -309,57 +306,63 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
                              ),
                              Expanded(
                                  flex: 3,
-                                 child:FutureBuilder(
-                                   future: Provider.of<QueryProvider>(context, listen: false).queryMissingUpdateData(Provider.of<QueryProvider>(context, listen: false).currentQueryUser.document,Provider.of<QueryProvider>(context, listen: false).currentQueryUser.tipo_identificacion),
-                                   builder: (BuildContext context, AsyncSnapshot snapshot){
-                                     if(!snapshot.hasData || snapshot.hasError || snapshot.data.length==0){
-                                       return Align(
-                                         alignment: Alignment.center,
-                                         child:  Text(
-                                           "No hay informacion para la consulta",
-                                           style: Theme
-                                               .of(context)
-                                               .textTheme
-                                               .bodySmall
-                                               ?.copyWith(color: Colors.black,fontSize: 15),
-                                           textAlign: TextAlign.start,
-                                           overflow: TextOverflow.ellipsis,
-                                         ),
-                                       );
-                                     }else{
-                                       return GridView.builder(
-                                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                             crossAxisCount: 2,mainAxisSpacing: 15,childAspectRatio: 4),
-                                         itemCount: snapshot.data.length,
-                                         itemBuilder: (BuildContext context, int index) {
-                                           return Container(
-                                               padding: const EdgeInsets.only(
-                                                 left: 5,
-                                                 right: 5,
-                                               ),
-                                               height: 10,
-                                               decoration:  BoxDecoration(
-                                                 border: Border.all(color: lightGrey),
-                                                 borderRadius: const BorderRadius.all(Radius.circular(10))
-                                               ),
-                                               child:  Align(
-                                                 alignment: Alignment.center,
-                                                 child: Text(
-                                                   snapshot.data[index],
-                                                   style: Theme
-                                                       .of(context)
-                                                       .textTheme
-                                                       .bodySmall
-                                                       ?.copyWith(color: Colors.black,fontSize: 12),
-                                                   textAlign: TextAlign.center,
-                                                   overflow: TextOverflow.ellipsis,
-                                                   maxLines: 5,
-                                                 ),
-                                               )
+                                 child: Consumer<QueryProvider>(
+                                   builder: (context, query, child) {
+                                     return FutureBuilder(
+                                       future: _queryService.queryMissingUpdateData(
+                                           query.currentQueryUser.document,
+                                           query.currentQueryUser.tipo_identificacion),
+                                       builder: (BuildContext context, AsyncSnapshot snapshot){
+                                         if(!snapshot.hasData || snapshot.hasError || snapshot.data.length==0){
+                                           return Align(
+                                             alignment: Alignment.center,
+                                             child:  Text(
+                                               "No hay informacion para la consulta",
+                                               style: Theme
+                                                   .of(context)
+                                                   .textTheme
+                                                   .bodySmall
+                                                   ?.copyWith(color: Colors.black,fontSize: 15),
+                                               textAlign: TextAlign.start,
+                                               overflow: TextOverflow.ellipsis,
+                                             ),
                                            );
-                                         },
-                                       );
-                                     }
+                                         }else{
+                                           return GridView.builder(
+                                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                 crossAxisCount: 2,mainAxisSpacing: 15,childAspectRatio: 4),
+                                             itemCount: snapshot.data.length,
+                                             itemBuilder: (BuildContext context, int index) {
+                                               return Container(
+                                                   padding: const EdgeInsets.only(
+                                                     left: 5,
+                                                     right: 5,
+                                                   ),
+                                                   height: 10,
+                                                   decoration:  BoxDecoration(
+                                                       border: Border.all(color: lightGrey),
+                                                       borderRadius: const BorderRadius.all(Radius.circular(10))
+                                                   ),
+                                                   child:  Align(
+                                                     alignment: Alignment.center,
+                                                     child: Text(
+                                                       snapshot.data[index],
+                                                       style: Theme
+                                                           .of(context)
+                                                           .textTheme
+                                                           .bodySmall
+                                                           ?.copyWith(color: Colors.black,fontSize: 12),
+                                                       textAlign: TextAlign.center,
+                                                       overflow: TextOverflow.ellipsis,
+                                                       maxLines: 5,
+                                                     ),
+                                                   )
+                                               );
+                                             },
+                                           );
+                                         }
+                                       },
+                                     );
                                    },
                                  )
                              ),
@@ -395,19 +398,17 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
       children: [
         Expanded(
           flex: 3,
-          child: Container(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child:  Text(
-                "$title:",
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headlineMedium
-                    ?.copyWith(color: Colors.black,fontSize: 14),
-                textAlign: TextAlign.start,
-                overflow: TextOverflow.ellipsis,
-              ),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child:  Text(
+              "$title:",
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(color: Colors.black,fontSize: 14),
+              textAlign: TextAlign.start,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
@@ -437,7 +438,7 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
 
   Widget subsidioWidget(){
     return Container(
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         top: 10,
         bottom:10
       ),
@@ -526,7 +527,7 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
 
   Widget grupoFamiliarWidget(){
     return Container(
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
           top: 10,
           bottom:10
       ),
@@ -625,43 +626,48 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
 
           Expanded(
               flex: 5,
-              child: FutureBuilder(
-                future: Provider.of<QueryProvider>(context, listen: false).queryUserFamilyGroup(
-                    Provider.of<QueryProvider>(context, listen: false).currentQueryUser.document,
-                    Provider.of<QueryProvider>(context, listen: false).currentQueryUser.tipo_identificacion),
-                builder: (BuildContext context, AsyncSnapshot snapshot){
-                  if(!snapshot.hasData || snapshot.hasError || snapshot.data.length==0){
-                    return Align(
-                      alignment: Alignment.center,
-                      child:  Text(
-                        "No hay informacion para la consulta",
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: Colors.black,fontSize: 15),
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  }else{
-                    return ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return  Padding(
-                            padding: const EdgeInsets.only(
-                              top: 10,
-                              bottom: 10,
-                            ),
-                            child: SizedBox(
-                              height: 100,
-                              child: grupoFamiliarItem(snapshot.data[index] as FamilyGroupMember),
-                            ),
-                          );
-                        }
-                    );
-                  }
+              child: Consumer<QueryProvider>(
+                builder: (context, query, child) {
+                  return FutureBuilder(
+                    future: _queryService.queryUserFamilyGroup(
+                        query.currentQueryUser.document,
+                        query.currentQueryUser.tipo_identificacion),
+                    builder: (BuildContext context, AsyncSnapshot snapshot){
+                      if(!snapshot.hasData || snapshot.hasError || snapshot.data.length==0){
+                        return Align(
+                          alignment: Alignment.center,
+                          child:  Text(
+                            "No hay informacion para la consulta",
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: Colors.black,fontSize: 15),
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      }else{
+                        return ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return  Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 10,
+                                  bottom: 10,
+                                ),
+                                child: SizedBox(
+                                  height: 100,
+                                  child: grupoFamiliarItem(snapshot.data[index] as FamilyGroupMember),
+                                ),
+                              );
+                            }
+                        );
+                      }
+                    },
+                  );
+
                 },
               )
           )
@@ -673,7 +679,7 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
 
   Widget guionesDireccionamientoWidget(){
     return Container(
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
           top: 10,
           bottom:10
       ),
@@ -748,49 +754,54 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
           Expanded(
               flex: 3,
               child:Container(
-                color: lightGrey.withOpacity(0.1),
-                width: double.infinity,
-                height: double.infinity,
-                margin: const EdgeInsets.only(
-                  top: 10
-                ),
-                child: FutureBuilder(
-                  future: Provider.of<QueryProvider>(context, listen: false).queryGuionesDireccionamiento(
-                      Provider.of<QueryProvider>(context, listen: false).currentQueryUser.document,
-                      Provider.of<QueryProvider>(context, listen: false).currentQueryUser.tipo_identificacion,
-                      dropdownvalue
+                  color: lightGrey.withOpacity(0.1),
+                  width: double.infinity,
+                  height: double.infinity,
+                  margin: const EdgeInsets.only(
+                      top: 10
                   ),
-                  builder: (BuildContext context, AsyncSnapshot snapshot){
-                    if(!snapshot.hasData || snapshot.hasError || snapshot.data.length==0){
-                      return Align(
-                        alignment: Alignment.center,
-                        child:  Text(
-                          "No hay informacion para la consulta",
-                          style: Theme
-                              .of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: Colors.black,fontSize: 15),
-                          textAlign: TextAlign.start,
-                          overflow: TextOverflow.ellipsis,
+                  child: Consumer<QueryProvider>(
+                    builder: (context, query, child) {
+                      return FutureBuilder(
+                        future: _queryService.queryGuionesDireccionamiento(
+                            query.currentQueryUser.document,
+                            query.currentQueryUser.tipo_identificacion,
+                            dropdownvalue
                         ),
-                      );
-                    }else{
-                      return ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return  Padding(
-                              padding: const EdgeInsets.only(
-                                top: 10,
+                        builder: (BuildContext context, AsyncSnapshot snapshot){
+                          if(!snapshot.hasData || snapshot.hasError || snapshot.data.length==0){
+                            return Align(
+                              alignment: Alignment.center,
+                              child:  Text(
+                                "No hay informacion para la consulta",
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(color: Colors.black,fontSize: 15),
+                                textAlign: TextAlign.start,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              child: guionItem(snapshot.data[index] as ItusGuion),
+                            );
+                          }else{
+                            return ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                itemCount: snapshot.data.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 10,
+                                    ),
+                                    child: guionItem(snapshot.data[index] as ItusGuion),
+                                  );
+                                }
                             );
                           }
+                        },
                       );
-                    }
-                  },
-                ),
+
+                    },
+                  )
               )
           ),
         ],
@@ -809,7 +820,7 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
           Expanded(
             flex: 3,
             child: Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 right: 8
               ),
               child: Align(

@@ -26,6 +26,10 @@ class MyTheme {
             ),
           ),
         ),
+      colorScheme: const ColorScheme.light(
+        primary: mainOrange, // header background color
+        onSurface: mainOrange, // body text color
+      ),
     );
   }
 }

@@ -47,6 +47,7 @@ static String searchTitle=  "BUSCAR";
 static String documentNumberTitle=  "Número de documento";
 static String documentTypeTitle=  "Tipo de documento";
 static String userNameTitle=  "Nombre de usuario";
+static String businessNameTitle=  "Nombre de Empresa";
 
 static String queryFail=  "No hay información para la búsqueda";
 static String dataTitle=  "Datos";
@@ -63,10 +64,11 @@ static String contactFormTitle=  "Forma contacto";
 static String subsidioMonetarioTitle=  "Subsidio Monetario";
 static String subsidioViviendaTitle=  "Subsidio Vivienda";
 static String datperTitle=  "Autorización";
+static String datperValueTitle=  "Datper";
 
 static String remainDataTitle=  "Datos pendientes por actualizar";
-static String userInfoTitle=  "Información de usuario";
-static String historyTitle=  "Histórico de usuario";
+static String userInfoTitle=  "Información de Persona";
+static String historyTitle=  "Histórico de Persona";
 static String businessInfoTitle=  "Información de empresa";
 static String businessHistoryTitle=  "Histórico de empresa";
 

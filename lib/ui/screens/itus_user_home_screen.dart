@@ -3,7 +3,7 @@ import 'package:itus_manager/themes/colors.dart';
 import 'package:itus_manager/ui/screens/current_user_info_screen.dart';
 
 import '../../constant/strings.dart';
-import 'current_user_history_screen.dart';
+import 'history_screen.dart';
 
 
 class ItusUserHomeScreen extends StatefulWidget {
@@ -75,7 +75,7 @@ class _ItusUserHomeScreenState extends State<ItusUserHomeScreen> with SingleTick
     if(_selectedIndex==0){
       return const CurrentUserInfoScreen();
     }else if(_selectedIndex==1){
-      return const CurrentUserHistoryScreen();
+      return HistoryScreen(userType: "Persona");
     }else if(_selectedIndex==2){
       return Container(color: Colors.green,);
     }else{

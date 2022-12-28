@@ -7,9 +7,8 @@ import 'package:itus_manager/ui/screens/profile_screen.dart';
 import 'package:itus_manager/ui/screens/recover_password_screen.dart';
 
 import '../ui/screens/current_user_info_screen.dart';
-import '../ui/screens/query_business_screen.dart';
 import '../ui/screens/query_screen.dart';
-import '../ui/screens/tus_business_home_screen.dart';
+import '../ui/screens/itus_business_home_screen.dart';
 
 
 class Routes{
@@ -19,13 +18,10 @@ class Routes{
   static String homeScreen= "homeScreen";
   static String queryScreen= "queryScreen";
   static String queryBusinessScreen= "queryBusinessScreen";
-
   static String itusUserHomeScreen= "itusUserHomeScreen";
-
   static String itusBusinessHomeScreen= "itusBusinessHomeScreen";
-
-
   static String currentUserInfoScreen= "currentUserInfoScreen";
+
 
   Map<String, WidgetBuilder> routes(){
     return {
@@ -33,11 +29,10 @@ class Routes{
       profileScreen: (context) =>   const ProfileScreen(),
       recoverPasswordScreen: (context) =>   const RecoverPasswordScreen(),
       homeScreen: (context) =>   const HomeScreen(),
-      queryScreen: (context) =>   const QueryScreen(),
-      queryBusinessScreen: (context) =>   const QueryBusinessScreen(),
+      queryScreen: (context) =>   QueryScreen(true),
+      queryBusinessScreen: (context) =>   QueryScreen(false),
       itusUserHomeScreen: (context) =>   const ItusUserHomeScreen(),
       itusBusinessHomeScreen: (context) =>   const ItusBusinessHomeScreen(),
-
       currentUserInfoScreen: (context) =>   const CurrentUserInfoScreen(),
 
     };
