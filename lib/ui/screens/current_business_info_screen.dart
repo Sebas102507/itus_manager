@@ -718,6 +718,10 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
           Expanded(
               flex: 1,
               child:Container(
+                margin: const EdgeInsets.only(
+                    top: 5,
+                    bottom: 5
+                ),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(5)),
                   border: Border.all(color: lightGrey.withOpacity(0.3),width: 1.5),

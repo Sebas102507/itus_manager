@@ -61,7 +61,7 @@ class _ItusBusinessHomeScreenState extends State<ItusBusinessHomeScreen> with Si
     if(_selectedIndex==0){
       return const CurrentBusinessInfoScreen();
     }else if(_selectedIndex==1){
-      return HistoryScreen(userType: "Empresa");
+      return HistoryScreen(isPerson: false);
     }else{
       return Container(color: Colors.cyanAccent,);
     }

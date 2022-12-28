@@ -10,9 +10,9 @@ import '../generic_widgets/outboundItem.dart';
 
 class HistoryScreen extends StatefulWidget {
 
-  String userType;
+  bool isPerson;
 
-  HistoryScreen({Key? key, required this.userType}) : super(key: key);
+  HistoryScreen({Key? key, required this.isPerson}) : super(key: key);
 
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
@@ -35,7 +35,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           title: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-            widget.userType=="Persona"?Strings.historyTitle:Strings.businessHistoryTitle,
+            widget.isPerson?Strings.historyTitle:Strings.businessHistoryTitle,
               style: Theme
                   .of(context)
                   .textTheme

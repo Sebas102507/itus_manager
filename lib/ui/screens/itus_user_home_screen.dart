@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:itus_manager/themes/colors.dart';
 import 'package:itus_manager/ui/screens/current_user_info_screen.dart';
+import 'package:itus_manager/ui/screens/frecuent_questions_screen.dart';
 
 import '../../constant/strings.dart';
 import 'history_screen.dart';
@@ -75,9 +76,9 @@ class _ItusUserHomeScreenState extends State<ItusUserHomeScreen> with SingleTick
     if(_selectedIndex==0){
       return const CurrentUserInfoScreen();
     }else if(_selectedIndex==1){
-      return HistoryScreen(userType: "Persona");
+      return HistoryScreen(isPerson: true);
     }else if(_selectedIndex==2){
-      return Container(color: Colors.green,);
+      return FrecuentQuestionsScreen();
     }else{
       return Container(color: Colors.cyanAccent,);
     }

@@ -71,6 +71,7 @@ static String userInfoTitle=  "Información de Persona";
 static String historyTitle=  "Histórico de Persona";
 static String businessInfoTitle=  "Información de empresa";
 static String businessHistoryTitle=  "Histórico de empresa";
+static String frecuentQuestionsTitle=  "Preguntas Frecuentes";
 
 static String subsidioTitle=  "Subsidios";
 static String grupoFamiliarTitle=  "Grupo Familiar";
