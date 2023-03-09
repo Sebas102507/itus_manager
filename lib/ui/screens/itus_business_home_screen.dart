@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:itus_manager/themes/colors.dart';
 import 'package:itus_manager/ui/screens/current_business_info_screen.dart';
+import 'package:itus_manager/ui/screens/opportunities_screen.dart';
 import '../../constant/strings.dart';
 import 'history_screen.dart';
 
@@ -63,7 +64,7 @@ class _ItusBusinessHomeScreenState extends State<ItusBusinessHomeScreen> with Si
     }else if(_selectedIndex==1){
       return HistoryScreen(isPerson: false);
     }else{
-      return Container(color: Colors.cyanAccent,);
+      return OpportunitiesScreen(isPerson: false,);
     }
   }
 

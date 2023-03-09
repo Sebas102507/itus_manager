@@ -72,12 +72,30 @@ static String historyTitle=  "Histórico de Persona";
 static String businessInfoTitle=  "Información de empresa";
 static String businessHistoryTitle=  "Histórico de empresa";
 static String frecuentQuestionsTitle=  "Preguntas Frecuentes";
+static String opportunitiesTitle=  "Oportunidades de Persona";
+static String businessOpportunitiesTitle=  "Oportunidades de Empresa";
 
 static String subsidioTitle=  "Subsidios";
 static String grupoFamiliarTitle=  "Grupo Familiar";
 static String guionesDireccionamientoTitle=  "Guiones de direccionamiento";
 static String cicloNegocioTitle=  "Ciclo de negocio";
 static String segmentoTitle=  "Segmento";
+static String grupoRelacionalTitle=  "Grupo Relacional";
+static String cargoTitle=  "Cargo";
+
+
+
+static String cantidadTrabajadoresTitle=  "Cantidad de Trabajadores";
+static String actividadEconomicaTitle=  "Actividad Económica";
+static String barrioTitle=  "Barrio";
+static String direccionTitle=  "Dirección";
+static String asesorPACTitle=  "Asesor PAC";
+
+
+
+static String camapannasTitle=  "Campañas";
+static String businessCycleTitle=  "Ciclo de negocio";
+static String questionTitle=  "Pregunta";
 
 
 //****************************NAVIGATION-BAR***********************************
@@ -85,4 +103,21 @@ static String segmentoTitle=  "Segmento";
   static String historyNavBar=  "Histórico";
   static String questionsNavBar=  "Preguntas Fre.";
   static String oportunitiesNavBar=  "Oportunidades";
+
+//***************************************************************
+
+  static String questionError=  "Primero Elige una campaña y un ciclo de negocio";
+
+  static String chooseCampaignTitle=  "Seleccione Campaña";
+
+  static String chooseBusinessCycleTitle=  "Seleccione ciclo de negocio";
+
+  static String comentariosTitle=  "Comentarios";
+
+  static String writeComentarioTitle=  "Escriba un comentario";
+
+  static String nonNotificationsTitle=  "No hay notificaciones disponibles.";
+
+  static String finishSentNotificationsTitle=  "Envío completado";
+
 }

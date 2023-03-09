@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:itus_manager/model/ItusUserResponse.dart';
+import '../model/ItusMainResponse/ItusUserResponse.dart';
+
 
 class ItusResponseProvider with ChangeNotifier{
 

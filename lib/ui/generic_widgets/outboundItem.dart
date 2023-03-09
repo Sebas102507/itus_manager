@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../themes/colors.dart';
 
 class OutBoundItem extends StatelessWidget {
+
   String title;
   String medio;
   DateTime date;

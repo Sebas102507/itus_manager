@@ -53,6 +53,11 @@ dependencies:
 
   #URL
   url_launcher: ^6.1.7
+  flutter_linkify: ^5.0.2
+
+  #SearchBar
+  searchfield: ^0.7.2
+
 
 
   # The following adds the Cupertino Icons font to your application.

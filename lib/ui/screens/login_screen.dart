@@ -2,12 +2,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:itus_manager/constant/assetImages.dart';
 import 'package:itus_manager/constant/routes.dart';
-import 'package:itus_manager/model/ItusUserResponse.dart';
 import 'package:itus_manager/provider/itus_response_provider.dart';
 import 'package:itus_manager/services/ToastMessage.dart';
 import 'package:itus_manager/themes/colors.dart';
 import 'package:provider/provider.dart';
 import '../../constant/strings.dart';
+import '../../model/ItusMainResponse/ItusUserResponse.dart';
+import '../../provider/query_provider.dart';
 import '../../services/auth_service.dart';
 import '../generic_widgets/generic_input_widget.dart';
 import '../generic_widgets/loading_widget.dart';
@@ -104,9 +105,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onPressed: ()async{
                                   try{
                                     setState(() {loading=true;});
-                                    ItusUserResponse response = await authService.authLogin("as@as.com","1234567");
-                                    //ItusUserResponse response = await authService.authLogin(controllerEmail.text,controllerPassword.text);
+                                    ItusUserResponse response = await authService.authLogin(controllerEmail.text,controllerPassword.text);
                                     Provider.of<ItusResponseProvider>(context, listen: false).update(response);
+                                    await Provider.of<QueryProvider>(context, listen: false).initData();
                                     setState(() {loading=false; controllerEmail.clear(); controllerPassword.clear();});
                                     Navigator.pushNamed(context, Routes.homeScreen);
                                   }catch(e){

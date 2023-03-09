@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:itus_manager/model/Itus_guion.dart';
-import 'package:itus_manager/model/familyGroupMember.dart';
-import 'package:itus_manager/provider/itus_response_provider.dart';
 import 'package:itus_manager/services/query_service.dart';
 import 'package:itus_manager/themes/colors.dart';
 import 'package:provider/provider.dart';
 import '../../constant/strings.dart';
+import '../../model/Queries/Business/QueryBusinessContact.dart';
 import '../../provider/query_provider.dart';
 
 class CurrentBusinessInfoScreen extends StatefulWidget {
@@ -40,7 +38,7 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
         ),
         body: SingleChildScrollView(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height*1.9),
+            constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height*1.4),
             child: Consumer<QueryProvider>(
               builder: (context, query, child) {
                 return Padding(
@@ -52,7 +50,7 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child:  Text(
-                            "${query.currentQueryUser.name} ${query.currentQueryUser.lastname}",
+                            query.currentQueryBusiness.nombre_empresa,
                             style: Theme
                                 .of(context)
                                 .textTheme
@@ -86,60 +84,55 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
                             Expanded(
                               flex: 1,
                               child: Container(
-                                child: dataWidget(Strings.documentTypeTitle,query.currentQueryUser.txt_tipodoc),
+                                child: dataWidget(Strings.documentTypeTitle,
+                                    query.currentQueryBusiness.description_indentificacion, titleWidth: 1,valueWidth: 1),
                               ),
                             ),
                             const Divider(),
                             Expanded(
                               flex: 1,
                               child: Container(
-                                child: dataWidget(Strings.documentNumberTitle,query.currentQueryUser.document),
+                                child: dataWidget(Strings.documentNumberTitle,
+                                    query.currentQueryBusiness.identificacion,titleWidth: 4,valueWidth: 3),
                               ),
                             ),
                             const Divider(),
                             Expanded(
                               flex: 1,
                               child: Container(
-                                child: dataWidget(Strings.emailTitle,query.currentQueryUser.email),
+                                child: dataWidget(Strings.emailTitle,query.currentQueryBusiness.email),
                               ),
                             ),
                             const Divider(),
                             Expanded(
                               flex: 1,
                               child: Container(
-                                child: dataWidget(Strings.phoneTitle,query.currentQueryUser.cellphone),
+                                child: dataWidget(Strings.phoneTitle,query.currentQueryBusiness.celular),
                               ),
                             ),
                             const Divider(),
                             Expanded(
                               flex: 1,
                               child: Container(
-                                child: dataWidget(Strings.ageTitle,query.currentQueryUser.edad),
+                                child: dataWidget(Strings.segmentoTitle,query.currentQueryBusiness.segmento),
                               ),
                             ),
                             const Divider(),
                             Expanded(
                               flex: 1,
                               child: Container(
-                                child: dataWidget(Strings.categoryTitle,query.currentQueryUser.categoria_afiliacion),
+                                child: dataWidget(Strings.cantidadTrabajadoresTitle,
+                                    query.currentQueryBusiness.cantidad_trabajadores.toString(), titleWidth: 6,valueWidth: 2),
                               ),
                             ),
                             const Divider(),
                             Expanded(
                               flex: 1,
                               child: Container(
-                                child: dataWidget(Strings.subsidioMonetarioTitle,query.currentQueryUser.subsidio_monetario),
+                                child: dataWidget(Strings.actividadEconomicaTitle,query.currentQueryBusiness.act_economica),
                               ),
                             ),
                             const Divider(),
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                child: dataWidget(Strings.subsidioViviendaTitle,query.currentQueryUser.subsidio_vivienda),
-                              ),
-                            ),
-                            const Divider(),
-
                             Expanded(
                               flex: 1,
                               child: Row(
@@ -168,9 +161,9 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
                                           right: 10
                                       ),
                                       decoration: BoxDecoration(
-                                          color: (query.currentQueryUser.dapter=="SI")?mainOrange:Colors.white,
+                                          color: (query.currentQueryBusiness.contacts.isNotEmpty && query.currentQueryBusiness.contacts.first.datper=="SI")?mainOrange:Colors.white,
                                           border: Border.all(
-                                            color: (query.currentQueryUser.dapter=="SI")?mainOrange:lightGrey.withOpacity(0.7),
+                                            color: (query.currentQueryBusiness.contacts.isNotEmpty && query.currentQueryBusiness.contacts.first.datper=="SI")?mainOrange:lightGrey.withOpacity(0.7),
                                           ),
                                           borderRadius: const BorderRadius.all(Radius.circular(10))
                                       ),
@@ -182,7 +175,7 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
                                               .of(context)
                                               .textTheme
                                               .headlineMedium
-                                              ?.copyWith(color: (query.currentQueryUser.dapter=="SI")?Colors.white:lightGrey.withOpacity(0.7),fontSize: 14),
+                                              ?.copyWith(color: (query.currentQueryBusiness.contacts.isNotEmpty && query.currentQueryBusiness.contacts.first.datper=="SI")?Colors.white:lightGrey.withOpacity(0.7),fontSize: 14),
                                           textAlign: TextAlign.center,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -193,6 +186,32 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
                               ),
                             ),
                             const Divider(),
+
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                child: dataWidget(Strings.barrioTitle,query.currentQueryBusiness.barrio),
+                              ),
+                            ),
+                            const Divider(),
+
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                child: dataWidget(Strings.direccionTitle,query.currentQueryBusiness.direccion),
+                              ),
+                            ),
+                            const Divider(),
+
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                child: dataWidget(Strings.asesorPACTitle,query.currentQueryBusiness.asesor_pac??"NA"),
+                              ),
+                            ),
+                            const Divider(),
+
+
                             Expanded(
                               flex: 1,
                               child: Row(
@@ -221,21 +240,21 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
                                           right: 10
                                       ),
                                       decoration: BoxDecoration(
-                                          color: (query.currentQueryUser.allow_sms==1)?mainOrange:Colors.white,
+                                          color: (query.currentQueryBusiness.autorizacion_celular=="SI")?mainOrange:Colors.white,
                                           border: Border.all(
-                                            color: (query.currentQueryUser.allow_sms==1)?mainOrange:lightGrey.withOpacity(0.7),
+                                            color: (query.currentQueryBusiness.autorizacion_celular=="SI")?mainOrange:lightGrey.withOpacity(0.7),
                                           ),
                                           borderRadius: const BorderRadius.all(Radius.circular(10))
                                       ),
                                       child: Align(
                                         alignment: Alignment.center,
                                         child: Text(
-                                          "Celular",
+                                          Strings.phoneTitle,
                                           style: Theme
                                               .of(context)
                                               .textTheme
                                               .headlineMedium
-                                              ?.copyWith(color: (query.currentQueryUser.allow_sms==1)?Colors.white:lightGrey.withOpacity(0.7),fontSize: 14),
+                                              ?.copyWith(color: (query.currentQueryBusiness.autorizacion_celular=="SI")?Colors.white:lightGrey.withOpacity(0.7),fontSize: 14),
                                           textAlign: TextAlign.center,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -250,21 +269,21 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
                                           right: 10
                                       ),
                                       decoration: BoxDecoration(
-                                          color: (query.currentQueryUser.allow_email==1)?mainOrange:Colors.white,
+                                          color: (query.currentQueryBusiness.autorizacion_email=="SI")?mainOrange:Colors.white,
                                           border: Border.all(
-                                            color: (query.currentQueryUser.allow_email==1)?mainOrange:lightGrey.withOpacity(0.7),
+                                            color: (query.currentQueryBusiness.autorizacion_email=="SI")?mainOrange:lightGrey.withOpacity(0.7),
                                           ),
                                           borderRadius: const BorderRadius.all(Radius.circular(10))
                                       ),
                                       child: Align(
                                         alignment: Alignment.center,
                                         child: Text(
-                                          "Correo",
+                                          Strings.emailTitle,
                                           style: Theme
                                               .of(context)
                                               .textTheme
                                               .headlineMedium
-                                              ?.copyWith(color: (query.currentQueryUser.allow_email==1)?Colors.white:lightGrey.withOpacity(0.7),fontSize: 14),
+                                              ?.copyWith(color: (query.currentQueryBusiness.autorizacion_email=="SI")?Colors.white:lightGrey.withOpacity(0.7),fontSize: 14),
                                           textAlign: TextAlign.center,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -307,15 +326,15 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
                                     builder: (context, query, child) {
                                       return FutureBuilder(
                                         future: _queryService.queryMissingUpdateData(
-                                            query.currentQueryUser.document,
-                                            query.currentQueryUser.tipo_identificacion),
+                                            query.currentQueryBusiness.identificacion,
+                                            query.currentQueryBusiness.tipo_identificacion.toString()),
 
                                         builder: (BuildContext context, AsyncSnapshot snapshot){
                                           if(!snapshot.hasData || snapshot.hasError || snapshot.data.length==0){
                                             return Align(
                                               alignment: Alignment.center,
                                               child:  Text(
-                                                "No hay informacion para la consulta",
+                                                Strings.queryFail,
                                                 style: Theme
                                                     .of(context)
                                                     .textTheme
@@ -369,17 +388,42 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
                         ),
                       ),
                       Expanded(
-                        flex: 5,
-                        child: Container(
-                          child: grupoFamiliarWidget(),
+                        flex: 3,
+                        child: Column(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child:  Text(Strings.grupoRelacionalTitle,
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .headlineMedium
+                                      ?.copyWith(color: Colors.black,fontSize: 16),
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+
+                            const Divider(
+                              color: mainGreen,
+                              thickness: 5,
+                            ),
+
+                            Expanded(
+                              flex: 6,
+                              child: ListView.builder(
+                                  itemCount: query.currentQueryBusiness.contacts.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return contactItem(index, query.currentQueryBusiness.contacts.elementAt(index));
+                                  }
+                              ),
+                            )
+                          ],
                         ),
                       ),
-                      Expanded(
-                        flex: 5,
-                        child: Container(
-                          child: guionesDireccionamientoWidget(),
-                        ),
-                      )
                     ],
                   ),
                 );
@@ -391,11 +435,11 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
   }
 
 
-  Widget dataWidget(String title, String value){
+  Widget dataWidget(String title, String value, {titleWidth=3, valueWidth=4}){
     return Row(
       children: [
         Expanded(
-          flex: 3,
+          flex: titleWidth,
           child: Align(
             alignment: Alignment.centerLeft,
             child:  Text(
@@ -411,7 +455,7 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
           ),
         ),
         Expanded(
-          flex: 4,
+          flex: valueWidth,
           child: Container(
             color: Colors.white,
             child: Align(
@@ -434,556 +478,149 @@ class _CurrentBusinessInfoScreenState extends State<CurrentBusinessInfoScreen> {
   }
 
 
-  Widget subsidioWidget(){
+
+  Widget contactItem(int index, QueryBusinessContact queryBusinessContact){
     return Container(
-      margin: const EdgeInsets.only(
-          top: 10,
-          bottom:10
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child:  Text(Strings.subsidioTitle,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headlineMedium
-                    ?.copyWith(color: Colors.black,fontSize: 18),
-                textAlign: TextAlign.start,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          Expanded(
-              flex: 1,
-              child:Container(
-                color: Colors.blue,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        color: mainGreen,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child:  Text(
-                            "Tipo",
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(color: Colors.white,fontSize: 15),
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                        color: mainGreen,
-                        child: Container(
-                          color: mainGreen,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child:  Text(
-                              "Monto",
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(color: Colors.white,fontSize: 15),
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              )
-          ),
-          Expanded(
-              flex: 5,
-              child:ListView.builder(
-                  itemCount: 5,
-                  itemBuilder: (BuildContext context, int index) {
-                    return subsidioItem("Monetario", 100000000000000);
-                  }
-              )
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  Widget grupoFamiliarWidget(){
-    return Container(
-      margin: const EdgeInsets.only(
-          top: 10,
-          bottom:10
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child:  Text(Strings.grupoFamiliarTitle,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headlineMedium
-                    ?.copyWith(color: Colors.black,fontSize: 18),
-                textAlign: TextAlign.start,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          Expanded(
-              flex: 1,
-              child:Container(
-                color: Colors.blue,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                        color: mainGreen,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child:  Text(
-                            "Tipo afiliación",
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(color: Colors.white,fontSize: 14),
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 4,
-                      child: Container(
-                        color: mainGreen,
-                        child: Container(
-                          color: mainGreen,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child:  Text(
-                              "Nombre",
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(color: Colors.white,fontSize: 14),
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        color: mainGreen,
-                        child: Container(
-                          color: mainGreen,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child:  Text(
-                              "Categoria",
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(color: Colors.white,fontSize: 14),
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              )
-          ),
-
-
-          Expanded(
-              flex: 5,
-              child: Consumer<QueryProvider>(
-                builder: (context, query, child) {
-                  return FutureBuilder(
-                    future: _queryService.queryUserFamilyGroup(
-                        query.currentQueryUser.document,
-                        query.currentQueryUser.tipo_identificacion),
-                    builder: (BuildContext context, AsyncSnapshot snapshot){
-                      if(!snapshot.hasData || snapshot.hasError || snapshot.data.length==0){
-                        return Align(
-                          alignment: Alignment.center,
-                          child:  Text(
-                            "No hay informacion para la consulta",
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(color: Colors.black,fontSize: 15),
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        );
-                      }else{
-                        return ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            itemCount: snapshot.data.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return  Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 10,
-                                  bottom: 10,
-                                ),
-                                child: SizedBox(
-                                  height: 100,
-                                  child: grupoFamiliarItem(snapshot.data[index] as FamilyGroupMember),
-                                ),
-                              );
-                            }
-                        );
-                      }
-                    },
-                  );
-
-                },
-              )
-          )
-        ],
-      ),
-    );
-  }
-
-
-  Widget guionesDireccionamientoWidget(){
-    return Container(
-      margin: const EdgeInsets.only(
-          top: 10,
-          bottom:10
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child:  Text(Strings.guionesDireccionamientoTitle,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headlineMedium
-                    ?.copyWith(color: Colors.black,fontSize: 18),
-                textAlign: TextAlign.start,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-
-          Expanded(
-            flex: 1,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child:  Text(Strings.cicloNegocioTitle,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Colors.black),
-                textAlign: TextAlign.start,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-
-
-          Expanded(
-              flex: 1,
-              child:Container(
-                margin: const EdgeInsets.only(
-                    top: 5,
-                    bottom: 5
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(5)),
-                  border: Border.all(color: lightGrey.withOpacity(0.3),width: 1.5),
-                  color: Colors.white,
-                ),
-                child:  DropdownButton<String>(
-                  isExpanded: true,
-                  value: dropdownvalue,
-                  items: Provider.of<ItusResponseProvider>(context, listen: false).itusResponse!.itusUser.ciclo.map((String items) {
-                    return DropdownMenuItem(
-                      value: items,
-                      child:  Text(
-                        items,
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: Colors.black),
-                        textAlign: TextAlign.center,
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownvalue = newValue!;
-                    });
-                  },
-                ),
-              )
-          ),
-          Expanded(
-              flex: 3,
-              child:Container(
-                color: lightGrey.withOpacity(0.1),
-                width: double.infinity,
-                height: double.infinity,
-                margin: const EdgeInsets.only(
-                    top: 10
-                ),
-                child: Consumer<QueryProvider>(
-                  builder: (context, query, child) {
-                    return FutureBuilder(
-                      future: _queryService.queryGuionesDireccionamiento(
-                          query.currentQueryUser.document,
-                          query.currentQueryUser.tipo_identificacion,
-                          dropdownvalue
-                      ),
-                      builder: (BuildContext context, AsyncSnapshot snapshot){
-                        if(!snapshot.hasData || snapshot.hasError || snapshot.data.length==0){
-                          return Align(
-                            alignment: Alignment.center,
-                            child:  Text(
-                              "No hay informacion para la consulta",
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(color: Colors.black,fontSize: 15),
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          );
-                        }else{
-                          return ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return  Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 10,
-                                  ),
-                                  child: guionItem(snapshot.data[index] as ItusGuion),
-                                );
-                              }
-                          );
-                        }
-                      },
-                    );
-
-                  },
-                )
-              )
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  Widget grupoFamiliarItem(FamilyGroupMember member){
-    return Container(
+      padding: const EdgeInsets.all(10),
       width: double.infinity,
-      height: 50,
-      color: lightGrey.withOpacity(0.1),
-      child: Row(
+      color: (index%2==0)?lightGrey.withOpacity(0.1):Colors.white,
+      child: Column(
         children: [
-          Expanded(
-              flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    right: 8
-                ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              queryBusinessContact.persona_contacto,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(color: Colors.black,fontSize: 16),
+              textAlign: TextAlign.start,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
                 child: Align(
-                  alignment: Alignment.center,
-                  child:  Text(
-                    member.tipo_afiliacion,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    Strings.cargoTitle,
                     style: Theme
                         .of(context)
                         .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Colors.black,fontSize: 12),
+                        .headlineMedium
+                        ?.copyWith(color: mainGreen,fontSize: 14, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.start,
+                    maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 5,
                   ),
                 ),
-              )
-          ),
-          Expanded(
-            flex: 4,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child:  Text(
-                member.nombre,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Colors.black,fontSize: 12),
-                textAlign: TextAlign.start,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
               ),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.center,
-              child:  Text(
-                member.categoria_afiliacion,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Colors.black,fontSize: 12),
-                textAlign: TextAlign.start,
-                overflow: TextOverflow.ellipsis,
+              Expanded(
+                flex: 5,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    queryBusinessContact.cargo_contacto,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(color: Colors.black,fontSize: 14),
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ),
-            ),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    Strings.phoneTitle,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(color: mainGreen,fontSize: 14, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    queryBusinessContact.celular_contacto,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(color: Colors.black,fontSize: 14),
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    Strings.emailTitle,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(color: mainGreen,fontSize: 14, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    queryBusinessContact.email_contacto,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(color: Colors.black,fontSize: 14),
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            ],
           )
         ],
       ),
     );
   }
 
-  Widget subsidioItem(String tipo, int monto){
-    return Container(
-      width: double.infinity,
-      height: 50,
-      color: lightGrey.withOpacity(0.1),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child:  Text(
-                tipo,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Colors.black,fontSize: 15),
-                textAlign: TextAlign.start,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child:  Text(
-                "\$${monto.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}",
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Colors.black,fontSize: 15),
-                textAlign: TextAlign.end,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
 
 
-  Widget guionItem(ItusGuion guion){
-
-    return  SizedBox(
-      width: double.infinity,
-      height: 150,
-      child: Column(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child:  Text(
-                Strings.segmentoTitle,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Colors.black,fontSize: 15,fontWeight: FontWeight.bold),
-                textAlign: TextAlign.start,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child:  Text(
-                guion.valor_cliente,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: lightGrey,fontSize: 12),
-                textAlign: TextAlign.start,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 5,
-            child: Align(
-              alignment: Alignment.topLeft,
-              child:  Text(
-                guion.guion,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Colors.black,fontSize: 15),
-                textAlign: TextAlign.justify,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 6,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-  }
 
 }

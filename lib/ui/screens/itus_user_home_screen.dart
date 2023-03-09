@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:itus_manager/themes/colors.dart';
 import 'package:itus_manager/ui/screens/current_user_info_screen.dart';
 import 'package:itus_manager/ui/screens/frecuent_questions_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../../constant/strings.dart';
+import '../../provider/query_provider.dart';
 import 'history_screen.dart';
+import 'opportunities_screen.dart';
 
 
 class ItusUserHomeScreen extends StatefulWidget {
@@ -29,7 +32,9 @@ class _ItusUserHomeScreenState extends State<ItusUserHomeScreen> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    final queryService= Provider.of<QueryProvider>(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         child: selectedScreen(),
       ),
@@ -80,7 +85,7 @@ class _ItusUserHomeScreenState extends State<ItusUserHomeScreen> with SingleTick
     }else if(_selectedIndex==2){
       return FrecuentQuestionsScreen();
     }else{
-      return Container(color: Colors.cyanAccent,);
+      return  OpportunitiesScreen(isPerson: true);
     }
   }
 

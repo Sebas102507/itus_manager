@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:itus_manager/model/ItusUserResponse.dart';
 import 'package:itus_manager/util/text_utils.dart';
 import 'package:logger/logger.dart';
 import '../constant/strings.dart';
-import '../model/ItusUser.dart';
+import '../model/ItusMainResponse/ItusUser.dart';
+import '../model/ItusMainResponse/ItusUserResponse.dart';
 
 class AuthService{
 

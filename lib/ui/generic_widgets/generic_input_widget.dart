@@ -40,7 +40,7 @@ class GenericInput extends StatelessWidget {
         ),
         cursorColor: Colors.black,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(
+          contentPadding: const EdgeInsets.only(
             top: 15
           ),
           hintText: title,

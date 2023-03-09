@@ -187,9 +187,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     flex: 1,
                     child: Container(
                       padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 50,
-                        bottom: 90
+                        left: 60,
+                        right: 60,
+                        bottom: 70
                       ),
                       child: ElevatedButton(
                           style: Theme.of(context).elevatedButtonTheme.style,

@@ -22,8 +22,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   String dropdownvalue = 'Outbound';
   List<String> historyOptions=["Outbound","Inbound","CRM"];
-  DateTime initDate = DateTime(2022,01,01);
-  DateTime lastDate = DateTime(2022,01,10);
+  DateTime initDate = DateTime(DateTime.now().year,DateTime.now().month,01);
+  DateTime lastDate = DateTime(DateTime.now().year,DateTime.now().month,10);
   bool nonQuery=true;
   late String selectedValue;
 
@@ -57,7 +57,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child:  Text(
-                        "${query.currentQueryUser.name} ${query.currentQueryUser.lastname}",
+                        widget.isPerson?"${query.currentQueryUser.name} ${query.currentQueryUser.lastname}":query.currentQueryBusiness.nombre_empresa,
                         style: Theme
                             .of(context)
                             .textTheme
@@ -172,15 +172,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                 onTap: ()async{
                                   if(dropdownvalue=="Outbound"){
 
-                                    await query.queryUserOutbound(query.currentQueryUser.document, initDate, lastDate);
+                                    await query.queryUserOutbound(widget.isPerson?query.currentQueryUser.document:query.currentQueryBusiness.identificacion, initDate, lastDate);
 
                                   }else if(dropdownvalue=="Inbound"){
 
-                                    await query.queryUserInbound(query.currentQueryUser.document, initDate, lastDate);
+                                    await query.queryUserInbound(widget.isPerson?query.currentQueryUser.document:query.currentQueryBusiness.identificacion, initDate, lastDate);
 
                                   }else{
 
-                                    await query.queryUserCRM(query.currentQueryUser.document, initDate, lastDate);
+                                    await query.queryUserCRM(widget.isPerson?query.currentQueryUser.document:query.currentQueryBusiness.identificacion, initDate, lastDate);
 
                                   }
                                   setState(() {
@@ -283,11 +283,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
           itemCount: queryProvider.outbounds.length,
           itemBuilder: (BuildContext context, int index) {
             return OutBoundItem(
-                queryProvider.outbounds[index].fuente,
-                queryProvider.outbounds[index].medio,
-                queryProvider.outbounds[index].fecha_envio,
-                queryProvider.outbounds[index].resumen,
-                queryProvider.outbounds[index].mensaje,
+                queryProvider.outbounds[index].fuente??"-",
+                queryProvider.outbounds[index].medio??"-",
+                queryProvider.outbounds[index].fecha_envio??"-",
+                queryProvider.outbounds[index].resumen??"-",
+                queryProvider.outbounds[index].mensaje??"-",
                 Provider.of<ItusResponseProvider>(context, listen: false).itusResponse!.token,
                 index,
             );
@@ -311,10 +311,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
           itemCount: queryProvider.inbounds.length,
           itemBuilder: (BuildContext context, int index) {
             return InBoundItem(
-                queryProvider.inbounds[index].linea,
-                queryProvider.inbounds[index].medio,
-                queryProvider.inbounds[index].fecha_envio,
-                queryProvider.inbounds[index].resumen,
+                queryProvider.inbounds[index].linea??"-",
+                queryProvider.inbounds[index].medio??"-",
+                queryProvider.inbounds[index].fecha_envio??"-",
+                queryProvider.inbounds[index].resumen??"-",
                 index,
             );
           }
@@ -337,10 +337,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
           itemCount: queryProvider.crms.length,
           itemBuilder: (BuildContext context, int index) {
             return CrmItem(
-                queryProvider.crms[index].ciclo_negocio,
-                queryProvider.crms[index].medio_respuesta,
-                queryProvider.crms[index].fecha_envio,
-              queryProvider.crms[index].descripcion_caso ?? queryProvider.crms[index].resumen,
+                queryProvider.crms[index].ciclo_negocio??"-",
+                queryProvider.crms[index].medio_respuesta??"-",
+                queryProvider.crms[index].fecha_envio??"-",
+              queryProvider.crms[index].descripcion_caso ?? queryProvider.crms[index].resumen ?? "-",
                 index,
             );
           }

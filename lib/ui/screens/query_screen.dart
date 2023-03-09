@@ -1,15 +1,17 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:itus_manager/constant/routes.dart';
-import 'package:itus_manager/model/QueryUser.dart';
+import 'package:itus_manager/model/Queries/Business/QueryBusiness.dart';
+import 'package:itus_manager/model/Queries/User/QueryUser.dart';
 import 'package:itus_manager/services/query_service.dart';
 import 'package:itus_manager/ui/generic_widgets/generic_input_widget.dart';
 import 'package:itus_manager/ui/generic_widgets/generic_numeric_input_widget.dart';
 import 'package:itus_manager/ui/generic_widgets/queryChooserButton.dart';
 import 'package:itus_manager/ui/generic_widgets/searchButton.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import '../../constant/strings.dart';
-import '../../model/ItusDocument.dart';
+import '../../model/ItusDocument/ItusDocument.dart';
 import '../../provider/query_provider.dart';
 import '../../themes/colors.dart';
 import '../generic_widgets/loading_widget.dart';
@@ -122,15 +124,27 @@ class _QueryScreenState extends State<QueryScreen> {
                           flex: 11,
                           child: Consumer<QueryProvider>(
                             builder: (context, query, child) {
-                              return query.currentQueryUsers.isNotEmpty?
-                              ListView.builder(
-                                  itemCount: query.currentQueryUsers.length,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return queryItem(query.currentQueryUsers.elementAt(index));
-                                  }
-                              )
-                                  :
-                              Container();
+                              if(widget.isPerson){
+                                return query.currentQueryUsers.isNotEmpty?
+                                ListView.builder(
+                                    itemCount: query.currentQueryUsers.length,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return queryUserItem(queryUser: query.currentQueryUsers.elementAt(index));
+                                    }
+                                )
+                                    :
+                                Container();
+                              }else{
+                                return query.currentQueryBusinesses.isNotEmpty?
+                                ListView.builder(
+                                    itemCount: query.currentQueryBusinesses.length,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return queryUserItem(queryBusiness: query.currentQueryBusinesses.elementAt(index));
+                                    }
+                                )
+                                    :
+                                Container();
+                              }
                             },
                           )
                       )
@@ -147,8 +161,6 @@ class _QueryScreenState extends State<QueryScreen> {
         )
     );
   }
-
-
 
   Widget searchWidget() {
     if(isDocumentSelected){
@@ -186,43 +198,33 @@ class _QueryScreenState extends State<QueryScreen> {
                               border: Border.all(color: lightGrey.withOpacity(0.3),width: 1.5),
                               color: Colors.white,
                             ),
-                            child:  FutureBuilder(
-                                future: queryService.queryAllDocuments(),
-                                builder: (BuildContext context, AsyncSnapshot snapshot){
-                                  if(!snapshot.hasData){
-                                    return LoadingWidget();
-                                  } else if(snapshot.hasError){
-                                    return const Center(
-                                      child: Text("Hubo un error."),
+                            child:  Consumer<QueryProvider>(
+                              builder: (context, query, child) {
+                                return DropdownButton<ItusDocument>(
+                                  isExpanded: true,
+                                  value: _selectedValue,
+                                  onChanged: (ItusDocument? newValue) {
+                                    setState(() {
+                                      _selectedValue = newValue!;
+                                      documentTypeSelected= _selectedValue.id_document;
+                                    });
+                                  },
+                                  items: query.allDocuments.map<DropdownMenuItem<ItusDocument>>((ItusDocument value) {
+                                    return DropdownMenuItem<ItusDocument>(
+                                      value: value,
+                                      child:  Text(
+                                        value.description,
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(color: Colors.black),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     );
-                                  }else{
-
-                                    return DropdownButton<ItusDocument>(
-                                      isExpanded: true,
-                                      value: _selectedValue,
-                                      onChanged: (ItusDocument? newValue) {
-                                        setState(() {
-                                          _selectedValue = newValue!;
-                                          documentTypeSelected= _selectedValue.id_document;
-                                        });
-                                      },
-                                      items: snapshot.data.map<DropdownMenuItem<ItusDocument>>((ItusDocument value) {
-                                        return DropdownMenuItem<ItusDocument>(
-                                          value: value,
-                                          child:  Text(
-                                            value.description,
-                                            style: Theme
-                                                .of(context)
-                                                .textTheme
-                                                .bodyMedium
-                                                ?.copyWith(color: Colors.black),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        );
-                                      }).toList(),
-                                    );
-                                  }
-                                }
+                                  }).toList(),
+                                );
+                              },
                             )
                         )
                     )
@@ -370,13 +372,26 @@ class _QueryScreenState extends State<QueryScreen> {
         setState(() {loading=true;});
         try{
           if(isDocumentSelected){
-            await Provider.of<QueryProvider>(context, listen: false).updateQueryByDocument("$documentTypeSelected",documentNumberController.text);
+
+            if(widget.isPerson){
+              await Provider.of<QueryProvider>(context, listen: false).updateQueryByDocument("$documentTypeSelected",documentNumberController.text);
+            }else{
+              await Provider.of<QueryProvider>(context, listen: false).updateBusinessQueryByDocument("$documentTypeSelected",documentNumberController.text);
+            }
+
           }else{
-            await Provider.of<QueryProvider>(context, listen: false).updateQueryByName(userNameController.text);
+
+            if(widget.isPerson){
+              await Provider.of<QueryProvider>(context, listen: false).updateQueryByName(userNameController.text);
+            }else{
+              await Provider.of<QueryProvider>(context, listen: false).updateBusinessQueryByName(userNameController.text);
+            }
           }
+
           FocusManager.instance.primaryFocus?.unfocus();
           setState(() {loading=false;});
         }catch(e){
+          Logger().e("ERROR: ${e.toString()}");
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString().substring(11)),backgroundColor: Colors.red,));
           Provider.of<QueryProvider>(context, listen: false).clearQuery();
           FocusManager.instance.primaryFocus?.unfocus();
@@ -387,12 +402,17 @@ class _QueryScreenState extends State<QueryScreen> {
   }
 
 
-  Widget queryItem(QueryUser queryUser){
+  Widget queryUserItem({QueryUser? queryUser, QueryBusiness? queryBusiness}){
     return InkWell(
       onTap: ()async{
         setState(() {loading=true;});
-        await Provider.of<QueryProvider>(context, listen: false).updateCurrentUserQuery(queryUser.tipo_identificacion,queryUser.document);
+        if(widget.isPerson){
+          await Provider.of<QueryProvider>(context, listen: false).updateCurrentUserQuery(queryUser!.tipo_identificacion,queryUser.document);
+        }else{
+          await Provider.of<QueryProvider>(context, listen: false).updateCurrentBusinessQuery(queryBusiness!.tipo_identificacion.toString(),queryBusiness.identificacion);
+        }
         setState(() {loading=false;});
+        Provider.of<QueryProvider>(context, listen: false).clearCurrentNotifications();
         if(widget.isPerson){
           Navigator.pushNamed(context, Routes.itusUserHomeScreen);
         }else{
@@ -408,10 +428,10 @@ class _QueryScreenState extends State<QueryScreen> {
           width: double.infinity,
           child: Row(
             children: [
-              const Expanded(
+               Expanded(
                   flex: 1,
                   child: Icon(
-                    Icons.person,
+                    widget.isPerson?Icons.person:Icons.business_sharp,
                     color: darkGrey,
                     size: 35,
                   )
@@ -427,7 +447,7 @@ class _QueryScreenState extends State<QueryScreen> {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "${queryUser.name} ${queryUser.lastname}",
+                              widget.isPerson?"${queryUser!.name} ${queryUser.lastname}":queryBusiness!.nombre_empresa,
                               overflow: TextOverflow.ellipsis,
                               style: Theme
                                   .of(context)
@@ -444,7 +464,7 @@ class _QueryScreenState extends State<QueryScreen> {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "${queryUser.txt_tipodoc} ${queryUser.document}",
+                          widget.isPerson?"${queryUser!.txt_tipodoc} ${queryUser.document}":"${queryBusiness!.alias_indentificacion} ${queryBusiness.identificacion}",
                           overflow: TextOverflow.ellipsis,
                           style: Theme
                               .of(context)

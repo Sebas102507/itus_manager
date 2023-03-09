@@ -1,20 +1,31 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:itus_manager/model/CRM.dart';
-import 'package:itus_manager/model/Inboud.dart';
-import 'package:itus_manager/model/Itus_guion.dart';
-import 'package:itus_manager/model/Outbound.dart';
-import 'package:itus_manager/model/QueryUser.dart';
+import 'package:itus_manager/model/Historico/CRM.dart';
+import 'package:itus_manager/model/Historico/Inboud.dart';
+import 'package:itus_manager/model/Queries/Business/QueryBusiness.dart';
+import 'package:itus_manager/model/Guion/Itus_guion.dart';
+import 'package:itus_manager/model/Historico/Outbound.dart';
+import 'package:itus_manager/model/Queries/User/QueryUser.dart';
+import 'package:itus_manager/model/ItusNotifications/itus_notification.dart';
+import 'package:itus_manager/model/question/QueryQuestionData.dart';
 import 'package:logger/logger.dart';
 import '../constant/strings.dart';
-import '../model/ItusDocument.dart';
-import '../model/familyGroupMember.dart';
+import '../model/ItusDocument/ItusDocument.dart';
+import '../model/ItusNotifications/ItusSentNotifications.dart';
+import '../GroupMember/familyGroupMember.dart';
 
 class QueryService{
 
   /////////////////******ENDPOINTS******************/////////////
   final String DOCUMENTS_QUERY ="http://commonweb.itus.com.co:8088/microv1/api/all_active_doc_types";
   final String PERSON_QUERY ="https://dev.itus.com.co:4430/api/visor/person";
+
+  final String BUSINESS_QUERY_BY_DOCUMENT ="https://dev.itus.com.co:4430/api/visor-companies-show";
+  final String CAMPAIN_QUERY_BY_DOCUMENT ="https://dev.itus.com.co:4430/api/campaigns-bussines-index";
+
+  final String QUESTIONS_QUERY ="https://dev.itus.com.co:4430/api/find-suggested-questions";
+
+
   final String FAMILY_GROUP_QUERY ="https://dev.itus.com.co:4430/api/visor/grup-fam";
   final String MISSING_DATA_QUERY ="https://dev.itus.com.co:4430/api/alerta-valor";
   final String GUIONES_QUERY ="https://dev.itus.com.co:4430/api/guion-valor";
@@ -22,6 +33,9 @@ class QueryService{
   final String OUTBOUND_QUERY ="https://dev.itus.com.co:4431/api/visor/out-boundv1";
   final String INBOUND_QUERY ="https://dev.itus.com.co:4431/api/visor/trx-inboundv1";
   final String CRM_QUERY ="https://dev.itus.com.co:4431/api/visor/crm-v1";
+  final String ALL_USER_NOTIF ="https://dev.itus.com.co:4430/api/notf";
+  final String SENT_USER_NOTIF ="https://dev.itus.com.co:4431/api/visor";
+
 
   /////////////////************************//////////////////////
 
@@ -31,22 +45,22 @@ class QueryService{
     http.Response response= await http.get(Uri.parse(DOCUMENTS_QUERY));
     if(response.statusCode==200){
       Map<String,dynamic> responseBody= jsonDecode(response.body);
-      Logger().i("AUTH-PROVIDER: Response_body: ${response.body}");
-      Logger().i("AUTH-PROVIDER: Response_token: ${responseBody["doctypes"]}");
       for(var element in responseBody["doctypes"]){
         documents.add(ItusDocument.fromJson(element));
       }
       return documents;
     }else{
-      throw Exception(Strings.invalidLoginCredentials);
+
+      Logger().i("ERROR: ${response.statusCode} ${response.body}");
+
+      throw Exception(Strings.queryFail);
     }
   }
 
 
   Future<List<QueryUser>> queryByDocument(String docType, String document)async{
-    if(docType.isEmpty || document.isEmpty){
-      throw Exception(Strings.queryFail);
-    }
+    if(docType.isEmpty || document.isEmpty) throw Exception(Strings.queryFail);
+
     Map data = {
       'datos_busqueda': '{"name":"","cellphone":"","document":"$document","tipodoc":"$docType"}'
     };
@@ -73,11 +87,9 @@ class QueryService{
   }
 
 
-
   Future<List<QueryUser>> queryByName(String name)async{
-    if(name.isEmpty){
-      throw Exception(Strings.queryFail);
-    }
+    if(name.isEmpty)throw Exception(Strings.queryFail);
+
     Map data = {
       'datos_busqueda': '{"name":"$name","cellphone":"","document":"","tipodoc":""}'
     };
@@ -103,6 +115,92 @@ class QueryService{
       Logger().i("QUERY-PROVIDER: Response: ${response.body}");
       throw Exception(Strings.queryFail);
     }
+  }
+
+
+  Future<List<QueryBusiness>> queryBusinessByDocument(String docType, String document,List<ItusDocument> allDocuments)async{
+
+    List<QueryBusiness> itusBusiness=[];
+
+    if(docType.isEmpty || document.isEmpty) throw Exception(Strings.queryFail);
+
+    Map data = {
+    "name":"",
+    "document":document,
+    "tipodoc":docType
+    };
+
+    Logger().i("QUERY-PROVIDER: DATA: $data");
+    http.Response response= await http.post(
+        Uri.parse(BUSINESS_QUERY_BY_DOCUMENT),
+        body: data
+    );
+    if(response.statusCode==200){
+      Logger().i("QUERY-PROVIDER: Response_body: ${response.body}");
+      Map<String,dynamic> responseBody= jsonDecode(response.body);
+
+      if(responseBody["success"]==null)throw Exception(Strings.queryFail);
+
+      QueryBusiness queryBusiness=QueryBusiness.fromJson(responseBody["success"]);
+
+      queryBusiness.description_indentificacion =  _getBussinessDocumentDescription(queryBusiness.tipo_identificacion, allDocuments);
+      queryBusiness.alias_indentificacion =  _getBussinessDocumentAlias(queryBusiness.tipo_identificacion,allDocuments);
+
+      itusBusiness.add(queryBusiness);
+      return itusBusiness;
+
+    }else{
+      Logger().i("QUERY-PROVIDER: Response: ${response.body}");
+      throw Exception(Strings.queryFail);
+    }
+  }
+
+
+  Future<List<QueryBusiness>> queryBusinessByName(String name, List<ItusDocument> allDocuments)async{
+    List<QueryBusiness> itusBusiness=[];
+
+    if(name.isEmpty)throw Exception(Strings.queryFail);
+
+    Map data = {
+      "name":name,
+      "document":"",
+      "tipodoc":""
+    };
+
+    Logger().i("QUERY-PROVIDER: DATA: $data");
+    http.Response response= await http.post(
+        Uri.parse(BUSINESS_QUERY_BY_DOCUMENT),
+        body: data
+    );
+
+    if(response.statusCode==200){
+      Logger().i("QUERY-PROVIDER: Response_body: ${response.body}");
+      Map<String,dynamic> responseBody= jsonDecode(response.body);
+
+      if(responseBody["success"]==null)throw Exception(Strings.queryFail);
+
+      for (var business in responseBody["success"]){
+        QueryBusiness queryBusiness=QueryBusiness.fromJson(business);
+        queryBusiness.description_indentificacion =  _getBussinessDocumentDescription(queryBusiness.tipo_identificacion,allDocuments);
+        queryBusiness.alias_indentificacion =  _getBussinessDocumentAlias(queryBusiness.tipo_identificacion,allDocuments);
+        itusBusiness.add(queryBusiness);
+      }
+      return itusBusiness;
+
+    }else{
+      Logger().i("QUERY-PROVIDER: Response: ${response.body}");
+      throw Exception(Strings.queryFail);
+    }
+  }
+
+
+  String _getBussinessDocumentDescription(int document,List<ItusDocument> allDocuments){
+    return (allDocuments.firstWhere((element) => element.id_document==document)).description;
+  }
+
+
+  String _getBussinessDocumentAlias(int document,List<ItusDocument> allDocuments){
+    return (allDocuments.firstWhere((element) => element.id_document==document)).alias;
   }
 
 
@@ -139,7 +237,6 @@ class QueryService{
       throw Exception(Strings.queryFail);
     }
   }
-
 
 
   Future<List<FamilyGroupMember>> queryUserFamilyGroup(String document, String documentType)async{
@@ -196,7 +293,6 @@ class QueryService{
   }
 
 
-
   Future<List<ItusGuion>> queryGuionesDireccionamiento(String document, String documentType, String cycle)async{
 
     List<ItusGuion> guiones=[];
@@ -214,8 +310,6 @@ class QueryService{
     }
     return guiones;
   }
-
-
 
 
   Future<List<ItusGuion>> _queryGuionesCicleXUser(String cycle, String userSegment)async{
@@ -268,7 +362,6 @@ class QueryService{
   }
 
 
-
   Future<List<Inbound>> queryUserInbound(String document, DateTime initial_date, DateTime final_date)async{
     List<Inbound> inbounds= [];
     Map data = {
@@ -295,6 +388,7 @@ class QueryService{
     return inbounds;
   }
 
+
   Future<List<CRM>> queryUserCRM(String document, DateTime initial_date, DateTime final_date)async{
     List<CRM> crms= [];
     Map data = {
@@ -316,6 +410,144 @@ class QueryService{
     }
     return crms;
   }
+
+
+  Future<List<String>> queryAllCampaigns()async{
+    List<String> campains=[];
+
+    http.Response response= await http.get(
+        Uri.parse(CAMPAIN_QUERY_BY_DOCUMENT),
+    );
+
+    if(response.statusCode==200){
+      Map<String,dynamic> responseBody= jsonDecode(response.body);
+      for(var cam in responseBody["campaigns"]){
+        campains.add(cam);
+      }
+    }
+    return campains;
+
+  }
+
+
+  Future<List<String>> queryAllBusinessCyclesByCampaigns(String campain)async{
+    List<String> cycles=[];
+
+    http.Response response= await http.get(
+      Uri.parse(CAMPAIN_QUERY_BY_DOCUMENT),
+    );
+
+    if(response.statusCode==200){
+      Map<String,dynamic> responseBody= jsonDecode(response.body);
+        for(var cam in responseBody["businessByCampaign"][campain]){
+          cycles.add(cam);
+      }
+    }
+    return cycles;
+  }
+
+
+  Future<QueryQuestionData?> queryQuestionByCampaignBusinessCycle(String? campaign, String? businessCycle, String question)async{
+
+    QueryQuestionData? queryQuestionData;
+
+    String encodedQuestion= Uri.encodeComponent(question.replaceAll("?", "").replaceAll("¿", ""));
+
+    Logger().i("ENCODED QUESTIONS: $encodedQuestion");
+
+    Logger().i("URL: $QUESTIONS_QUERY/$encodedQuestion/$campaign/$businessCycle");
+
+    http.Response response= await http.get(
+      Uri.parse("$QUESTIONS_QUERY/$encodedQuestion/$campaign/$businessCycle"),
+    );
+
+    if(response.statusCode==200){
+      Map<String,dynamic> responseBody= jsonDecode(response.body);
+      queryQuestionData= QueryQuestionData.fromJson(responseBody);
+    }
+    return queryQuestionData;
+  }
+
+
+  Future<QueryQuestionData?> queryQuestionFromUrl(String url)async{
+
+    QueryQuestionData? queryQuestionData;
+
+    http.Response response= await http.get(
+      Uri.parse(url),
+    );
+
+    if(response.statusCode==200){
+      Map<String,dynamic> responseBody= jsonDecode(response.body);
+      queryQuestionData= QueryQuestionData.fromJson(responseBody);
+    }
+    return queryQuestionData;
+  }
+
+
+  Future<List<ItusNotification>> getAllNotificationsData(String document, String docType)async {
+    List<ItusNotification> allNotifications = await _queryAllUserNotifications(document, docType);
+    List<ItusSentNotifications> sentNotifications = await _queryUserSentNotifications(document);
+    List<ItusNotification> showNotifications =[];
+    for (var element in allNotifications) {
+      if(sentNotifications.where((element2) => element2.tipo==element.titulo_notificacion && element2.fecha!.day==element.fechain!.day  && element2.fecha!.month==element.fechain!.month && element2.fecha!.year==element.fechain!.year).isEmpty){
+        showNotifications.add(element);
+      }
+    }
+    return showNotifications;
+  }
+
+   _queryAllUserNotifications(String document, String docType)async{
+     List<ItusNotification> allNotifications =[];
+    http.Response response= await http.get(
+      Uri.parse("$ALL_USER_NOTIF/$document/$docType"),
+    );
+
+    if(response.statusCode==200){
+      Map<String,dynamic> responseBody= jsonDecode(response.body);
+      for(var element in responseBody["success"]){
+        String objectKey = element.keys.first;
+
+       try{
+         if (element[objectKey].containsKey("SMS") && element[objectKey]["SMS"].containsKey("master")) {
+           allNotifications.add(ItusNotification.fromJson(element[objectKey]["SMS"]["master"]));
+
+         } else if (element[objectKey].containsKey("EMAIL") && element[objectKey]["EMAIL"].containsKey("master")) {
+           allNotifications.add(ItusNotification.fromJson(element[objectKey]["EMAIL"]["master"]));
+
+         } else if (element[objectKey].containsKey("WHATSAPP") && element[objectKey]["WHATSAPP"].containsKey("master")) {
+           allNotifications.add(ItusNotification.fromJson(element[objectKey]["WHATSAPP"]["master"]));
+         }
+       }catch(e){
+         Logger().e("Error : $e, ${objectKey}");
+       }
+
+      }
+    }
+    return allNotifications;
+  }
+
+
+
+  _queryUserSentNotifications(String document)async{
+    List<ItusSentNotifications> sentNotifications =[];
+    http.Response response= await http.get(
+      Uri.parse("$SENT_USER_NOTIF/$document/perfil"),
+    );
+
+    if(response.statusCode==200){
+      Map<String,dynamic> responseBody= jsonDecode(response.body);
+      for(var element in responseBody["success"]["notificaciones"]){
+        try{
+          sentNotifications.add(ItusSentNotifications.fromJson(element));
+        }catch(e){
+          Logger().e("Error : $e, $element");
+        }
+      }
+    }
+    return sentNotifications;
+  }
+
 
 
 

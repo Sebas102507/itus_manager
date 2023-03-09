@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:itus_manager/model/Itus_guion.dart';
-import 'package:itus_manager/model/familyGroupMember.dart';
+import 'package:itus_manager/model/Guion/Itus_guion.dart';
+import 'package:itus_manager/GroupMember/familyGroupMember.dart';
 import 'package:itus_manager/provider/itus_response_provider.dart';
 import 'package:itus_manager/themes/colors.dart';
 import 'package:provider/provider.dart';
@@ -233,7 +233,7 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
                                      child: Align(
                                        alignment: Alignment.center,
                                        child: Text(
-                                         "Celular",
+                                         Strings.phoneTitle,
                                          style: Theme
                                              .of(context)
                                              .textTheme
@@ -262,7 +262,7 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
                                      child: Align(
                                        alignment: Alignment.center,
                                        child: Text(
-                                         "Correo",
+                                         Strings.emailTitle,
                                          style: Theme
                                              .of(context)
                                              .textTheme
@@ -317,7 +317,7 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
                                            return Align(
                                              alignment: Alignment.center,
                                              child:  Text(
-                                               "No hay informacion para la consulta",
+                                               Strings.queryFail,
                                                style: Theme
                                                    .of(context)
                                                    .textTheme
@@ -637,7 +637,7 @@ class _CurrentUserInfoScreenState extends State<CurrentUserInfoScreen> {
                         return Align(
                           alignment: Alignment.center,
                           child:  Text(
-                            "No hay informacion para la consulta",
+                            Strings.queryFail,
                             style: Theme
                                 .of(context)
                                 .textTheme
